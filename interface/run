@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./server/run
+./proxy/run

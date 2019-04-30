@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><title>フリック検出</title>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<style>
+* { padding:0; margin:0; }
+#photo {
+    margin-top: 50px;
+}
+</style>
+</head><body>
+<div id="disp"></div>
+<div><img id="photo" src="http://tokidoki-web.com/wp-content/themes/yanyo/images/logo.png"></div>
+<script>
+ 
+$("#photo").style.position= "absolute";
+// 各変数の宣言
+var pinch_dist, base_x = 0, base_y = 0;
+var photo_x = 0, photo_y = 0, photo_r = 1;
+ 
+ 
+// 画面に指が触れたときの処理を定義
+document.addEventListener("touchstart", function(e) {
+    //スクロール無効化                                       
+    e.preventDefault();
+    // 指1本のときは触れているＸＹ座標を記録
+    if (e.touches.length <= 1) {
+        base_x = e.touches[0].pageX;
+        base_y = e.touches[0].pageY;
+    // 指2本の2本の指のＸ座標の差とＹ座標の差を加えた値を記録 
+    } else if (e.touches.length >= 2) {
+        var p1 = e.touches[0];
+        var p2 = e.touches[1];
+        pinch_dist = Math.abs(p1.pageX - p2.pageX) + Math.abs(p1.pageY - p2.pageY);
+    }
+});
+ 
+ 
+// 画面上で指を移動させているきの処理を定義
+document.addEventListener("touchmove", function(e) {
+    // スクロール無効化                                      
+    e.preventDefault();
+     
+    var p1 = e.touches[0];
+    // 指1本の移動距離に応じて画像の左上の座標を算出
+    if (e.touches.length <= 1) {
+        photo_x += p1.pageX - base_x;
+        photo_y += p1.pageY - base_y;
+        base_x = p1.pageX;
+        base_y = p1.pageY;
+    // 指2本の指の間の距離に応じて拡大・縮小率を算出  
+    } else if(e.touches.length <= 2) {
+        var p2 = e.touches[1];
+        var dist = Math.abs(p1.pageX - p2.pageX) + Math.abs(p1.pageY - p2.pageY);
+        photo_r = dist / pinch_dist;
+    }
+ 
+});
+ 
+// タイマーの処理。15ミリ秒ごとに画像を更新
+setInterval(function(){
+    // 画像のオブジェクトを取得
+    var scale = "pos(" + photo_x + "," + photo_y + ")";
+    var style = $("#photo").style;
+    style.left = photo_x + "px";
+    style.top = photo_y + "px";
+    // 画像サイズを変更
+    style.transform = scale;
+    style.webkitTransform = scale;
+    // デバッグ情報を表示
+    $("#disp").innerHTML = scale;
+}, 15);
+ 
+ 
+// 引数で指定した要素(id)のオブジェクトを取得
+function $(id) {
+    return document.querySelector(id);
+}
+</script></body></html>

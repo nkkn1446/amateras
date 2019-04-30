@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nohup `cd $(dirname ${0}) && pwd`/a.out &

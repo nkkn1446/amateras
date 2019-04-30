@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package Protocol;
+
+service Interface {
+  rpc Touch (TouchRequest) returns (TouchReply);
+}
+
+message TouchRequest {
+  double x = 1;
+  double y = 2;
+}
+
+message TouchReply {
+  double x = 1;
+  double y = 2;
+}
