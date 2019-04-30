@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "browserify src/client.js > a.js"
+  },
+  "dependencies": {
+    "google-protobuf": "^3.7.1",
+    "grpc-web": "^1.0.4",
+    "jquery": "^3.4.0"
+  },
+  "devDependencies": {
+    "browserify": "^14.1.0"
+  }
+}
