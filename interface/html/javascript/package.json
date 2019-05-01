@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "browserify src/main.js > a.js"
+    "build": "browserify src/client.js > a.js"
   },
   "dependencies": {
     "google-protobuf": "^3.7.1",
