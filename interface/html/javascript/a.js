@@ -13041,7 +13041,7 @@ var request = new TouchRequest();
 request.setX(0.0);
 request.setY(0.0);
 
-var client = new InterfaceClient('http://3.95.132.0:8080', {}, {});
+var client = new InterfaceClient('http://54.167.52.215:8080', {}, {});
 client.touch(request, {}, (err, response) => {
   console.log(response.getX() + " " + response.getY());
 });
