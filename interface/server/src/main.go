@@ -35,8 +35,7 @@ const (
 type server struct{}
 
 func (s *server) Touch(ctx context.Context, in *pb.TouchRequest) (*pb.TouchReply, error) {
-	//return &pb.TouchReply{X: "HelloHello " + in.Name}, nil
-	return &pb.TouchReply{X: 0.0, Y: 0.0}, nil
+	return &pb.TouchReply{X: in.X, Y: in.Y}, nil
 }
 
 func main() {
