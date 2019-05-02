@@ -35,7 +35,12 @@ const (
 type server struct{}
 
 func (s *server) Touch(ctx context.Context, in *pb.TouchRequest) (*pb.TouchReply, error) {
-	return &pb.TouchReply{X: in.X, Y: in.Y}, nil
+	points := []*pb.TouchReply_Point{}
+	for i := 0; i < len(in.Points); i++ {
+		point := pb.TouchReply_Point{X: in.Points[i].X,Y: in.Points[i].Y}
+		points = append(points, &point)
+	}
+	return &pb.TouchReply{Points: points}, nil
 }
 
 func main() {
