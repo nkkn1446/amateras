@@ -31,19 +31,39 @@ $( function() {
 } );
 
 var ac = document.getElementById("bitmovin_player_wrapper"); // canvas要素のオブジェクトを取得
-ac.ontouchstart = function (e) {
+var touches = [];
+// 画面に指が触れたときの処理を定義
+ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
-    var t = e.touches[0];       // 触れている指に関する情報を取得
-
-    var request = new TouchRequest();
-    request.setX(t.pageX);
-    request.setY(t.pageY);
-
-    var client = new InterfaceClient('http://3.95.155.208:8080', {}, {});
-    client.touch(request, {}, (err, response) => {
-    var s = "";             // 変数sを初期化
-    s += "x=" + response.getX() + ",";
-    s += "y=" + response.getY() + "<br>";
-    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
+    touches = e.touches;
 });
-};
+
+var maxDelay = 16;
+(function loop(delay){
+   setTimeout(function() {
+	var startTime = Date.now();
+        if (touches[0] != null) {
+            var t = touches[0];
+    
+            var request = new TouchRequest();
+            request.setX(t.pageX);
+            request.setY(t.pageY);
+        
+            var client = new InterfaceClient('http://35.170.200.122:8080', {}, {});
+            client.touch(request, {}, (err, response) => {
+                var s = "";             // 変数sを初期化
+                s += "x=" + response.getX() + ",";
+                s += "y=" + response.getY() + "<br>";
+                document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
+    	    });
+	}
+        for (var i = 0; i < touches.length; ++i) {
+            delete touches[i];
+        }
+        touches = [];
+
+	// 処理時間を加味して遅延させる
+	var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);
+	loop(nextDelay);
+    }, delay);
+})(maxDelay);
