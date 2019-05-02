@@ -34,13 +34,16 @@ const (
 
 type server struct{}
 
-func (s *server) Touch(ctx context.Context, in *pb.TouchRequest) (*pb.TouchReply, error) {
-	points := []*pb.TouchReply_Point{}
+func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
+	points := []*pb.Reply_Point{}
 	for i := 0; i < len(in.Points); i++ {
-		point := pb.TouchReply_Point{X: in.Points[i].X,Y: in.Points[i].Y}
+		point := pb.Reply_Point{
+			Type: pb.Reply_Point_Type(in.Points[i].Type),
+			X: in.Points[i].X,
+			Y: in.Points[i].Y}
 		points = append(points, &point)
 	}
-	return &pb.TouchReply{Points: points}, nil
+	return &pb.Reply{Points: points}, nil
 }
 
 func main() {

@@ -1,6 +1,6 @@
 var $ = require('jquery');
 
-const {TouchRequest} = require('./protocol_pb.js');
+const {Request} = require('./protocol_pb.js');
 const {InterfaceClient} = require('./protocol_grpc_web_pb.js');
 
 $( function() {
@@ -35,13 +35,27 @@ var touches = [];
 // 画面に指が触れたときの処理を定義
 ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
-    touches = e.touches;
+    touches = e.changedTouches;
+});
+var moves = [];
+ac.addEventListener("touchmove", function(e) {
+    e.preventDefault();     // デフォルトイベントをキャンセル
+    moves = e.changedTouches;
+});
+var ends = [];
+ac.addEventListener("touchend", function(e) {
+    // 指が離れているのでイベントのキャンセルは不要
+    // e.preventDefault();     // デフォルトイベントをキャンセル
+    ends = e.changedTouches;
 });
 
 var maxDelay = 16;
 (function loop(delay){
    setTimeout(function() {
-        if (touches.length <= 0) {
+        if (touches.length <= 0 &&
+	    moves.length <= 0 &&
+	    ends.length <= 0)
+	{
 	    loop(maxDelay);
 	    return;
 	}
@@ -51,19 +65,40 @@ var maxDelay = 16;
 	for (var i = 0; i < touches.length; ++i) {
 	    var t = touches[i];
 
-	    var point = new TouchRequest.Point();
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.TOUCH);
 	    point.setX(t.pageX);
 	    point.setY(t.pageY);
 	    points[points.length] = point;
 	}
-        var request = new TouchRequest();
+	for (var i = 0; i < moves.length; ++i) {
+	    var t = moves[i];
+
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.MOVE);
+	    point.setX(t.pageX);
+	    point.setY(t.pageY);
+	    points[points.length] = point;
+	}
+	for (var i = 0; i < ends.length; ++i) {
+	    var t = ends[i];
+
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.END);
+	    point.setX(t.pageX);
+	    point.setY(t.pageY);
+	    points[points.length] = point;
+	}
+        var request = new Request();
         request.setPointsList(points);
     
         var client = new InterfaceClient('http://54.172.189.101:8080', {}, {});
-        client.touch(request, {}, (err, response) => {
+        client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
-	    var points = response.getPointsList();
+	    var points = reply.getPointsList();
+	    var typeList = {0:"touch",1:"move",2:"end"};
 	    for (var i = 0; i < points.length; ++i) {
+		s += "type=" + typeList[points[i].getType()] + ",";
                 s += "x=" + points[i].getX() + ",";
                 s += "y=" + points[i].getY() + "<br>";
 	    }
@@ -73,6 +108,14 @@ var maxDelay = 16;
             delete touches[i];
         }
         touches = [];
+        for (var i = 0; i < moves.length; ++i) {
+            delete moves[i];
+        }
+        moves = [];
+        for (var i = 0; i < ends.length; ++i) {
+            delete ends[i];
+        }
+        ends = [];
 
 	// 処理時間を加味して遅延させる
 	var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);

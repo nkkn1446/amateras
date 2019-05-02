@@ -13034,7 +13034,7 @@ return jQuery;
 },{}],7:[function(require,module,exports){
 var $ = require('jquery');
 
-const {TouchRequest} = require('./protocol_pb.js');
+const {Request} = require('./protocol_pb.js');
 const {InterfaceClient} = require('./protocol_grpc_web_pb.js');
 
 $( function() {
@@ -13069,13 +13069,25 @@ var touches = [];
 // 画面に指が触れたときの処理を定義
 ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
-    touches = e.touches;
+    touches = e.changedTouches;
+});
+var moves = [];
+ac.addEventListener("touchmove", function(e) {
+    e.preventDefault();     // デフォルトイベントをキャンセル
+    moves = e.changedTouches;
+});
+var ends = [];
+ac.addEventListener("touchend", function(e) {
+    ends = e.changedTouches;
 });
 
 var maxDelay = 16;
 (function loop(delay){
    setTimeout(function() {
-        if (touches.length <= 0) {
+        if (touches.length <= 0 &&
+	    moves.length <= 0 &&
+	    ends.length <= 0)
+	{
 	    loop(maxDelay);
 	    return;
 	}
@@ -13085,19 +13097,40 @@ var maxDelay = 16;
 	for (var i = 0; i < touches.length; ++i) {
 	    var t = touches[i];
 
-	    var point = new TouchRequest.Point();
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.TOUCH);
 	    point.setX(t.pageX);
 	    point.setY(t.pageY);
 	    points[points.length] = point;
 	}
-        var request = new TouchRequest();
+	for (var i = 0; i < moves.length; ++i) {
+	    var t = moves[i];
+
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.MOVE);
+	    point.setX(t.pageX);
+	    point.setY(t.pageY);
+	    points[points.length] = point;
+	}
+	for (var i = 0; i < ends.length; ++i) {
+	    var t = ends[i];
+
+	    var point = new Request.Point();
+	    point.setType(Request.Point.Type.END);
+	    point.setX(t.pageX);
+	    point.setY(t.pageY);
+	    points[points.length] = point;
+	}
+        var request = new Request();
         request.setPointsList(points);
     
         var client = new InterfaceClient('http://54.172.189.101:8080', {}, {});
-        client.touch(request, {}, (err, response) => {
+        client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
-	    var points = response.getPointsList();
+	    var points = reply.getPointsList();
+	    var typeList = {0:"touch",1:"move",2:"end"};
 	    for (var i = 0; i < points.length; ++i) {
+		s += "type=" + typeList[points[i].getType()] + ",";
                 s += "x=" + points[i].getX() + ",";
                 s += "y=" + points[i].getY() + "<br>";
 	    }
@@ -13107,6 +13140,14 @@ var maxDelay = 16;
             delete touches[i];
         }
         touches = [];
+        for (var i = 0; i < moves.length; ++i) {
+            delete moves[i];
+        }
+        moves = [];
+        for (var i = 0; i < ends.length; ++i) {
+            delete ends[i];
+        }
+        ends = [];
 
 	// 処理時間を加味して遅延させる
 	var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);
@@ -13206,27 +13247,27 @@ proto.Protocol.InterfacePromiseClient =
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Protocol.TouchRequest,
- *   !proto.Protocol.TouchReply>}
+ *   !proto.Protocol.Request,
+ *   !proto.Protocol.Reply>}
  */
 const methodInfo_Interface_Touch = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.Protocol.TouchReply,
-  /** @param {!proto.Protocol.TouchRequest} request */
+  proto.Protocol.Reply,
+  /** @param {!proto.Protocol.Request} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Protocol.TouchReply.deserializeBinary
+  proto.Protocol.Reply.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Protocol.TouchRequest} request The
+ * @param {!proto.Protocol.Request} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.Protocol.TouchReply)}
+ * @param {function(?grpc.web.Error, ?proto.Protocol.Reply)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.Protocol.TouchReply>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.Protocol.Reply>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.Protocol.InterfaceClient.prototype.touch =
@@ -13241,11 +13282,11 @@ proto.Protocol.InterfaceClient.prototype.touch =
 
 
 /**
- * @param {!proto.Protocol.TouchRequest} request The
+ * @param {!proto.Protocol.Request} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.Protocol.TouchReply>}
+ * @return {!Promise<!proto.Protocol.Reply>}
  *     A native promise that resolves to the response
  */
 proto.Protocol.InterfacePromiseClient.prototype.touch =
@@ -13275,10 +13316,12 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-goog.exportSymbol('proto.Protocol.TouchReply', null, global);
-goog.exportSymbol('proto.Protocol.TouchReply.Point', null, global);
-goog.exportSymbol('proto.Protocol.TouchRequest', null, global);
-goog.exportSymbol('proto.Protocol.TouchRequest.Point', null, global);
+goog.exportSymbol('proto.Protocol.Reply', null, global);
+goog.exportSymbol('proto.Protocol.Reply.Point', null, global);
+goog.exportSymbol('proto.Protocol.Reply.Point.Type', null, global);
+goog.exportSymbol('proto.Protocol.Request', null, global);
+goog.exportSymbol('proto.Protocol.Request.Point', null, global);
+goog.exportSymbol('proto.Protocol.Request.Point.Type', null, global);
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -13290,19 +13333,19 @@ goog.exportSymbol('proto.Protocol.TouchRequest.Point', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.Protocol.TouchRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.Protocol.TouchRequest.repeatedFields_, null);
+proto.Protocol.Request = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.Protocol.Request.repeatedFields_, null);
 };
-goog.inherits(proto.Protocol.TouchRequest, jspb.Message);
+goog.inherits(proto.Protocol.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.Protocol.TouchRequest.displayName = 'proto.Protocol.TouchRequest';
+  proto.Protocol.Request.displayName = 'proto.Protocol.Request';
 }
 /**
  * List of repeated fields within this message type.
  * @private {!Array<number>}
  * @const
  */
-proto.Protocol.TouchRequest.repeatedFields_ = [1];
+proto.Protocol.Request.repeatedFields_ = [1];
 
 
 
@@ -13317,8 +13360,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.Protocol.TouchRequest.prototype.toObject = function(opt_includeInstance) {
-  return proto.Protocol.TouchRequest.toObject(opt_includeInstance, this);
+proto.Protocol.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.Protocol.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -13327,14 +13370,14 @@ proto.Protocol.TouchRequest.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.Protocol.TouchRequest} msg The msg instance to transform.
+ * @param {!proto.Protocol.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchRequest.toObject = function(includeInstance, msg) {
+proto.Protocol.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     pointsList: jspb.Message.toObjectList(msg.getPointsList(),
-    proto.Protocol.TouchRequest.Point.toObject, includeInstance)
+    proto.Protocol.Request.Point.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -13348,23 +13391,23 @@ proto.Protocol.TouchRequest.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.Protocol.TouchRequest}
+ * @return {!proto.Protocol.Request}
  */
-proto.Protocol.TouchRequest.deserializeBinary = function(bytes) {
+proto.Protocol.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.Protocol.TouchRequest;
-  return proto.Protocol.TouchRequest.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.Protocol.Request;
+  return proto.Protocol.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.Protocol.TouchRequest} msg The message object to deserialize into.
+ * @param {!proto.Protocol.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.Protocol.TouchRequest}
+ * @return {!proto.Protocol.Request}
  */
-proto.Protocol.TouchRequest.deserializeBinaryFromReader = function(msg, reader) {
+proto.Protocol.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -13372,8 +13415,8 @@ proto.Protocol.TouchRequest.deserializeBinaryFromReader = function(msg, reader) 
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.Protocol.TouchRequest.Point;
-      reader.readMessage(value,proto.Protocol.TouchRequest.Point.deserializeBinaryFromReader);
+      var value = new proto.Protocol.Request.Point;
+      reader.readMessage(value,proto.Protocol.Request.Point.deserializeBinaryFromReader);
       msg.addPoints(value);
       break;
     default:
@@ -13389,9 +13432,9 @@ proto.Protocol.TouchRequest.deserializeBinaryFromReader = function(msg, reader) 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.Protocol.TouchRequest.prototype.serializeBinary = function() {
+proto.Protocol.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.Protocol.TouchRequest.serializeBinaryToWriter(this, writer);
+  proto.Protocol.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -13399,18 +13442,18 @@ proto.Protocol.TouchRequest.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.Protocol.TouchRequest} message
+ * @param {!proto.Protocol.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchRequest.serializeBinaryToWriter = function(message, writer) {
+proto.Protocol.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPointsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
       f,
-      proto.Protocol.TouchRequest.Point.serializeBinaryToWriter
+      proto.Protocol.Request.Point.serializeBinaryToWriter
     );
   }
 };
@@ -13427,12 +13470,12 @@ proto.Protocol.TouchRequest.serializeBinaryToWriter = function(message, writer) 
  * @extends {jspb.Message}
  * @constructor
  */
-proto.Protocol.TouchRequest.Point = function(opt_data) {
+proto.Protocol.Request.Point = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.Protocol.TouchRequest.Point, jspb.Message);
+goog.inherits(proto.Protocol.Request.Point, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.Protocol.TouchRequest.Point.displayName = 'proto.Protocol.TouchRequest.Point';
+  proto.Protocol.Request.Point.displayName = 'proto.Protocol.Request.Point';
 }
 
 
@@ -13447,8 +13490,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.Protocol.TouchRequest.Point.prototype.toObject = function(opt_includeInstance) {
-  return proto.Protocol.TouchRequest.Point.toObject(opt_includeInstance, this);
+proto.Protocol.Request.Point.prototype.toObject = function(opt_includeInstance) {
+  return proto.Protocol.Request.Point.toObject(opt_includeInstance, this);
 };
 
 
@@ -13457,14 +13500,15 @@ proto.Protocol.TouchRequest.Point.prototype.toObject = function(opt_includeInsta
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.Protocol.TouchRequest.Point} msg The msg instance to transform.
+ * @param {!proto.Protocol.Request.Point} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchRequest.Point.toObject = function(includeInstance, msg) {
+proto.Protocol.Request.Point.toObject = function(includeInstance, msg) {
   var f, obj = {
-    x: +jspb.Message.getFieldWithDefault(msg, 1, 0.0),
-    y: +jspb.Message.getFieldWithDefault(msg, 2, 0.0)
+    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    x: +jspb.Message.getFieldWithDefault(msg, 2, 0.0),
+    y: +jspb.Message.getFieldWithDefault(msg, 3, 0.0)
   };
 
   if (includeInstance) {
@@ -13478,23 +13522,23 @@ proto.Protocol.TouchRequest.Point.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.Protocol.TouchRequest.Point}
+ * @return {!proto.Protocol.Request.Point}
  */
-proto.Protocol.TouchRequest.Point.deserializeBinary = function(bytes) {
+proto.Protocol.Request.Point.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.Protocol.TouchRequest.Point;
-  return proto.Protocol.TouchRequest.Point.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.Protocol.Request.Point;
+  return proto.Protocol.Request.Point.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.Protocol.TouchRequest.Point} msg The message object to deserialize into.
+ * @param {!proto.Protocol.Request.Point} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.Protocol.TouchRequest.Point}
+ * @return {!proto.Protocol.Request.Point}
  */
-proto.Protocol.TouchRequest.Point.deserializeBinaryFromReader = function(msg, reader) {
+proto.Protocol.Request.Point.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -13502,10 +13546,14 @@ proto.Protocol.TouchRequest.Point.deserializeBinaryFromReader = function(msg, re
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
+      var value = /** @type {!proto.Protocol.Request.Point.Type} */ (reader.readEnum());
+      msg.setType(value);
+      break;
+    case 2:
       var value = /** @type {number} */ (reader.readDouble());
       msg.setX(value);
       break;
-    case 2:
+    case 3:
       var value = /** @type {number} */ (reader.readDouble());
       msg.setY(value);
       break;
@@ -13522,9 +13570,9 @@ proto.Protocol.TouchRequest.Point.deserializeBinaryFromReader = function(msg, re
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.Protocol.TouchRequest.Point.prototype.serializeBinary = function() {
+proto.Protocol.Request.Point.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.Protocol.TouchRequest.Point.serializeBinaryToWriter(this, writer);
+  proto.Protocol.Request.Point.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -13532,86 +13580,117 @@ proto.Protocol.TouchRequest.Point.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.Protocol.TouchRequest.Point} message
+ * @param {!proto.Protocol.Request.Point} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchRequest.Point.serializeBinaryToWriter = function(message, writer) {
+proto.Protocol.Request.Point.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getX();
+  f = message.getType();
   if (f !== 0.0) {
-    writer.writeDouble(
+    writer.writeEnum(
       1,
       f
     );
   }
-  f = message.getY();
+  f = message.getX();
   if (f !== 0.0) {
     writer.writeDouble(
       2,
       f
     );
   }
+  f = message.getY();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      3,
+      f
+    );
+  }
 };
 
 
 /**
- * optional double x = 1;
- * @return {number}
+ * @enum {number}
  */
-proto.Protocol.TouchRequest.Point.prototype.getX = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+proto.Protocol.Request.Point.Type = {
+  TOUCH: 0,
+  MOVE: 1,
+  END: 2
+};
+
+/**
+ * optional Type type = 1;
+ * @return {!proto.Protocol.Request.Point.Type}
+ */
+proto.Protocol.Request.Point.prototype.getType = function() {
+  return /** @type {!proto.Protocol.Request.Point.Type} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
-/** @param {number} value */
-proto.Protocol.TouchRequest.Point.prototype.setX = function(value) {
-  jspb.Message.setProto3FloatField(this, 1, value);
+/** @param {!proto.Protocol.Request.Point.Type} value */
+proto.Protocol.Request.Point.prototype.setType = function(value) {
+  jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
 /**
- * optional double y = 2;
+ * optional double x = 2;
  * @return {number}
  */
-proto.Protocol.TouchRequest.Point.prototype.getY = function() {
+proto.Protocol.Request.Point.prototype.getX = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
 };
 
 
 /** @param {number} value */
-proto.Protocol.TouchRequest.Point.prototype.setY = function(value) {
+proto.Protocol.Request.Point.prototype.setX = function(value) {
   jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
 /**
- * repeated Point points = 1;
- * @return {!Array<!proto.Protocol.TouchRequest.Point>}
+ * optional double y = 3;
+ * @return {number}
  */
-proto.Protocol.TouchRequest.prototype.getPointsList = function() {
-  return /** @type{!Array<!proto.Protocol.TouchRequest.Point>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.Protocol.TouchRequest.Point, 1));
+proto.Protocol.Request.Point.prototype.getY = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
 };
 
 
-/** @param {!Array<!proto.Protocol.TouchRequest.Point>} value */
-proto.Protocol.TouchRequest.prototype.setPointsList = function(value) {
+/** @param {number} value */
+proto.Protocol.Request.Point.prototype.setY = function(value) {
+  jspb.Message.setProto3FloatField(this, 3, value);
+};
+
+
+/**
+ * repeated Point points = 1;
+ * @return {!Array<!proto.Protocol.Request.Point>}
+ */
+proto.Protocol.Request.prototype.getPointsList = function() {
+  return /** @type{!Array<!proto.Protocol.Request.Point>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.Protocol.Request.Point, 1));
+};
+
+
+/** @param {!Array<!proto.Protocol.Request.Point>} value */
+proto.Protocol.Request.prototype.setPointsList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
 /**
- * @param {!proto.Protocol.TouchRequest.Point=} opt_value
+ * @param {!proto.Protocol.Request.Point=} opt_value
  * @param {number=} opt_index
- * @return {!proto.Protocol.TouchRequest.Point}
+ * @return {!proto.Protocol.Request.Point}
  */
-proto.Protocol.TouchRequest.prototype.addPoints = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.Protocol.TouchRequest.Point, opt_index);
+proto.Protocol.Request.prototype.addPoints = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.Protocol.Request.Point, opt_index);
 };
 
 
-proto.Protocol.TouchRequest.prototype.clearPointsList = function() {
+proto.Protocol.Request.prototype.clearPointsList = function() {
   this.setPointsList([]);
 };
 
@@ -13627,19 +13706,19 @@ proto.Protocol.TouchRequest.prototype.clearPointsList = function() {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.Protocol.TouchReply = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.Protocol.TouchReply.repeatedFields_, null);
+proto.Protocol.Reply = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.Protocol.Reply.repeatedFields_, null);
 };
-goog.inherits(proto.Protocol.TouchReply, jspb.Message);
+goog.inherits(proto.Protocol.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.Protocol.TouchReply.displayName = 'proto.Protocol.TouchReply';
+  proto.Protocol.Reply.displayName = 'proto.Protocol.Reply';
 }
 /**
  * List of repeated fields within this message type.
  * @private {!Array<number>}
  * @const
  */
-proto.Protocol.TouchReply.repeatedFields_ = [1];
+proto.Protocol.Reply.repeatedFields_ = [1];
 
 
 
@@ -13654,8 +13733,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.Protocol.TouchReply.prototype.toObject = function(opt_includeInstance) {
-  return proto.Protocol.TouchReply.toObject(opt_includeInstance, this);
+proto.Protocol.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.Protocol.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -13664,14 +13743,14 @@ proto.Protocol.TouchReply.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.Protocol.TouchReply} msg The msg instance to transform.
+ * @param {!proto.Protocol.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchReply.toObject = function(includeInstance, msg) {
+proto.Protocol.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
     pointsList: jspb.Message.toObjectList(msg.getPointsList(),
-    proto.Protocol.TouchReply.Point.toObject, includeInstance)
+    proto.Protocol.Reply.Point.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -13685,23 +13764,23 @@ proto.Protocol.TouchReply.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.Protocol.TouchReply}
+ * @return {!proto.Protocol.Reply}
  */
-proto.Protocol.TouchReply.deserializeBinary = function(bytes) {
+proto.Protocol.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.Protocol.TouchReply;
-  return proto.Protocol.TouchReply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.Protocol.Reply;
+  return proto.Protocol.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.Protocol.TouchReply} msg The message object to deserialize into.
+ * @param {!proto.Protocol.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.Protocol.TouchReply}
+ * @return {!proto.Protocol.Reply}
  */
-proto.Protocol.TouchReply.deserializeBinaryFromReader = function(msg, reader) {
+proto.Protocol.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -13709,8 +13788,8 @@ proto.Protocol.TouchReply.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.Protocol.TouchReply.Point;
-      reader.readMessage(value,proto.Protocol.TouchReply.Point.deserializeBinaryFromReader);
+      var value = new proto.Protocol.Reply.Point;
+      reader.readMessage(value,proto.Protocol.Reply.Point.deserializeBinaryFromReader);
       msg.addPoints(value);
       break;
     default:
@@ -13726,9 +13805,9 @@ proto.Protocol.TouchReply.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.Protocol.TouchReply.prototype.serializeBinary = function() {
+proto.Protocol.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.Protocol.TouchReply.serializeBinaryToWriter(this, writer);
+  proto.Protocol.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -13736,18 +13815,18 @@ proto.Protocol.TouchReply.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.Protocol.TouchReply} message
+ * @param {!proto.Protocol.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchReply.serializeBinaryToWriter = function(message, writer) {
+proto.Protocol.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPointsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
       f,
-      proto.Protocol.TouchReply.Point.serializeBinaryToWriter
+      proto.Protocol.Reply.Point.serializeBinaryToWriter
     );
   }
 };
@@ -13764,12 +13843,12 @@ proto.Protocol.TouchReply.serializeBinaryToWriter = function(message, writer) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.Protocol.TouchReply.Point = function(opt_data) {
+proto.Protocol.Reply.Point = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.Protocol.TouchReply.Point, jspb.Message);
+goog.inherits(proto.Protocol.Reply.Point, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.Protocol.TouchReply.Point.displayName = 'proto.Protocol.TouchReply.Point';
+  proto.Protocol.Reply.Point.displayName = 'proto.Protocol.Reply.Point';
 }
 
 
@@ -13784,8 +13863,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.Protocol.TouchReply.Point.prototype.toObject = function(opt_includeInstance) {
-  return proto.Protocol.TouchReply.Point.toObject(opt_includeInstance, this);
+proto.Protocol.Reply.Point.prototype.toObject = function(opt_includeInstance) {
+  return proto.Protocol.Reply.Point.toObject(opt_includeInstance, this);
 };
 
 
@@ -13794,14 +13873,15 @@ proto.Protocol.TouchReply.Point.prototype.toObject = function(opt_includeInstanc
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.Protocol.TouchReply.Point} msg The msg instance to transform.
+ * @param {!proto.Protocol.Reply.Point} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchReply.Point.toObject = function(includeInstance, msg) {
+proto.Protocol.Reply.Point.toObject = function(includeInstance, msg) {
   var f, obj = {
-    x: +jspb.Message.getFieldWithDefault(msg, 1, 0.0),
-    y: +jspb.Message.getFieldWithDefault(msg, 2, 0.0)
+    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    x: +jspb.Message.getFieldWithDefault(msg, 2, 0.0),
+    y: +jspb.Message.getFieldWithDefault(msg, 3, 0.0)
   };
 
   if (includeInstance) {
@@ -13815,23 +13895,23 @@ proto.Protocol.TouchReply.Point.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.Protocol.TouchReply.Point}
+ * @return {!proto.Protocol.Reply.Point}
  */
-proto.Protocol.TouchReply.Point.deserializeBinary = function(bytes) {
+proto.Protocol.Reply.Point.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.Protocol.TouchReply.Point;
-  return proto.Protocol.TouchReply.Point.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.Protocol.Reply.Point;
+  return proto.Protocol.Reply.Point.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.Protocol.TouchReply.Point} msg The message object to deserialize into.
+ * @param {!proto.Protocol.Reply.Point} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.Protocol.TouchReply.Point}
+ * @return {!proto.Protocol.Reply.Point}
  */
-proto.Protocol.TouchReply.Point.deserializeBinaryFromReader = function(msg, reader) {
+proto.Protocol.Reply.Point.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -13839,10 +13919,14 @@ proto.Protocol.TouchReply.Point.deserializeBinaryFromReader = function(msg, read
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
+      var value = /** @type {!proto.Protocol.Reply.Point.Type} */ (reader.readEnum());
+      msg.setType(value);
+      break;
+    case 2:
       var value = /** @type {number} */ (reader.readDouble());
       msg.setX(value);
       break;
-    case 2:
+    case 3:
       var value = /** @type {number} */ (reader.readDouble());
       msg.setY(value);
       break;
@@ -13859,9 +13943,9 @@ proto.Protocol.TouchReply.Point.deserializeBinaryFromReader = function(msg, read
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.Protocol.TouchReply.Point.prototype.serializeBinary = function() {
+proto.Protocol.Reply.Point.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.Protocol.TouchReply.Point.serializeBinaryToWriter(this, writer);
+  proto.Protocol.Reply.Point.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -13869,86 +13953,117 @@ proto.Protocol.TouchReply.Point.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.Protocol.TouchReply.Point} message
+ * @param {!proto.Protocol.Reply.Point} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.Protocol.TouchReply.Point.serializeBinaryToWriter = function(message, writer) {
+proto.Protocol.Reply.Point.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getX();
+  f = message.getType();
   if (f !== 0.0) {
-    writer.writeDouble(
+    writer.writeEnum(
       1,
       f
     );
   }
-  f = message.getY();
+  f = message.getX();
   if (f !== 0.0) {
     writer.writeDouble(
       2,
       f
     );
   }
+  f = message.getY();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      3,
+      f
+    );
+  }
 };
 
 
 /**
- * optional double x = 1;
- * @return {number}
+ * @enum {number}
  */
-proto.Protocol.TouchReply.Point.prototype.getX = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
+proto.Protocol.Reply.Point.Type = {
+  TOUCH: 0,
+  MOVE: 1,
+  END: 2
+};
+
+/**
+ * optional Type type = 1;
+ * @return {!proto.Protocol.Reply.Point.Type}
+ */
+proto.Protocol.Reply.Point.prototype.getType = function() {
+  return /** @type {!proto.Protocol.Reply.Point.Type} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
-/** @param {number} value */
-proto.Protocol.TouchReply.Point.prototype.setX = function(value) {
-  jspb.Message.setProto3FloatField(this, 1, value);
+/** @param {!proto.Protocol.Reply.Point.Type} value */
+proto.Protocol.Reply.Point.prototype.setType = function(value) {
+  jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
 /**
- * optional double y = 2;
+ * optional double x = 2;
  * @return {number}
  */
-proto.Protocol.TouchReply.Point.prototype.getY = function() {
+proto.Protocol.Reply.Point.prototype.getX = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
 };
 
 
 /** @param {number} value */
-proto.Protocol.TouchReply.Point.prototype.setY = function(value) {
+proto.Protocol.Reply.Point.prototype.setX = function(value) {
   jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
 /**
- * repeated Point points = 1;
- * @return {!Array<!proto.Protocol.TouchReply.Point>}
+ * optional double y = 3;
+ * @return {number}
  */
-proto.Protocol.TouchReply.prototype.getPointsList = function() {
-  return /** @type{!Array<!proto.Protocol.TouchReply.Point>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.Protocol.TouchReply.Point, 1));
+proto.Protocol.Reply.Point.prototype.getY = function() {
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
 };
 
 
-/** @param {!Array<!proto.Protocol.TouchReply.Point>} value */
-proto.Protocol.TouchReply.prototype.setPointsList = function(value) {
+/** @param {number} value */
+proto.Protocol.Reply.Point.prototype.setY = function(value) {
+  jspb.Message.setProto3FloatField(this, 3, value);
+};
+
+
+/**
+ * repeated Point points = 1;
+ * @return {!Array<!proto.Protocol.Reply.Point>}
+ */
+proto.Protocol.Reply.prototype.getPointsList = function() {
+  return /** @type{!Array<!proto.Protocol.Reply.Point>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.Protocol.Reply.Point, 1));
+};
+
+
+/** @param {!Array<!proto.Protocol.Reply.Point>} value */
+proto.Protocol.Reply.prototype.setPointsList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
 /**
- * @param {!proto.Protocol.TouchReply.Point=} opt_value
+ * @param {!proto.Protocol.Reply.Point=} opt_value
  * @param {number=} opt_index
- * @return {!proto.Protocol.TouchReply.Point}
+ * @return {!proto.Protocol.Reply.Point}
  */
-proto.Protocol.TouchReply.prototype.addPoints = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.Protocol.TouchReply.Point, opt_index);
+proto.Protocol.Reply.prototype.addPoints = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.Protocol.Reply.Point, opt_index);
 };
 
 
-proto.Protocol.TouchReply.prototype.clearPointsList = function() {
+proto.Protocol.Reply.prototype.clearPointsList = function() {
   this.setPointsList([]);
 };
 

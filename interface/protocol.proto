@@ -3,21 +3,33 @@ syntax = "proto3";
 package Protocol;
 
 service Interface {
-  rpc Touch (TouchRequest) returns (TouchReply);
+  rpc Touch (Request) returns (Reply);
 }
 
-message TouchRequest {
+message Request {
   message Point {
-    double x = 1;
-    double y = 2;
+    enum Type {
+      Touch = 0;
+      Move = 1;
+      End = 2;
+    }
+    Type type = 1;
+    double x = 2;
+    double y = 3;
   }
   repeated Point points = 1;
 }
 
-message TouchReply {
+message Reply {
   message Point {
-    double x = 1;
-    double y = 2;
+    enum Type {
+      Touch = 0;
+      Move = 1;
+      End = 2;
+    }
+    Type type = 1;
+    double x = 2;
+    double y = 3;
   }
   repeated Point points = 1;
 }
