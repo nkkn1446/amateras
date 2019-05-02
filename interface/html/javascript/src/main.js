@@ -41,22 +41,34 @@ ac.addEventListener("touchstart", function(e) {
 var maxDelay = 16;
 (function loop(delay){
    setTimeout(function() {
-	var startTime = Date.now();
-        if (touches[0] != null) {
-            var t = touches[0];
-    
-            var request = new TouchRequest();
-            request.setX(t.pageX);
-            request.setY(t.pageY);
-        
-            var client = new InterfaceClient('http://35.170.200.122:8080', {}, {});
-            client.touch(request, {}, (err, response) => {
-                var s = "";             // 変数sを初期化
-                s += "x=" + response.getX() + ",";
-                s += "y=" + response.getY() + "<br>";
-                document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
-    	    });
+        if (touches.length <= 0) {
+	    loop(maxDelay);
+	    return;
 	}
+	var startTime = Date.now();
+
+	var points = [];
+	for (var i = 0; i < touches.length; ++i) {
+	    var t = touches[i];
+
+	    var point = new TouchRequest.Point();
+	    point.setX(t.pageX);
+	    point.setY(t.pageY);
+	    points[points.length] = point;
+	}
+        var request = new TouchRequest();
+        request.setPointsList(points);
+    
+        var client = new InterfaceClient('http://54.172.189.101:8080', {}, {});
+        client.touch(request, {}, (err, response) => {
+            var s = "";             // 変数sを初期化
+	    var points = response.getPointsList();
+	    for (var i = 0; i < points.length; ++i) {
+                s += "x=" + points[i].getX() + ",";
+                s += "y=" + points[i].getY() + "<br>";
+	    }
+	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
+	});
         for (var i = 0; i < touches.length; ++i) {
             delete touches[i];
         }

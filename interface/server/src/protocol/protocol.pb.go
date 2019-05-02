@@ -25,11 +25,10 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type TouchRequest struct {
-	X                    float64  `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    float64  `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Points               []*TouchRequest_Point `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
 }
 
 func (m *TouchRequest) Reset()         { *m = TouchRequest{} }
@@ -57,14 +56,54 @@ func (m *TouchRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TouchRequest proto.InternalMessageInfo
 
-func (m *TouchRequest) GetX() float64 {
+func (m *TouchRequest) GetPoints() []*TouchRequest_Point {
+	if m != nil {
+		return m.Points
+	}
+	return nil
+}
+
+type TouchRequest_Point struct {
+	X                    float64  `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y                    float64  `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TouchRequest_Point) Reset()         { *m = TouchRequest_Point{} }
+func (m *TouchRequest_Point) String() string { return proto.CompactTextString(m) }
+func (*TouchRequest_Point) ProtoMessage()    {}
+func (*TouchRequest_Point) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2bc2336598a3f7e0, []int{0, 0}
+}
+
+func (m *TouchRequest_Point) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TouchRequest_Point.Unmarshal(m, b)
+}
+func (m *TouchRequest_Point) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TouchRequest_Point.Marshal(b, m, deterministic)
+}
+func (m *TouchRequest_Point) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TouchRequest_Point.Merge(m, src)
+}
+func (m *TouchRequest_Point) XXX_Size() int {
+	return xxx_messageInfo_TouchRequest_Point.Size(m)
+}
+func (m *TouchRequest_Point) XXX_DiscardUnknown() {
+	xxx_messageInfo_TouchRequest_Point.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TouchRequest_Point proto.InternalMessageInfo
+
+func (m *TouchRequest_Point) GetX() float64 {
 	if m != nil {
 		return m.X
 	}
 	return 0
 }
 
-func (m *TouchRequest) GetY() float64 {
+func (m *TouchRequest_Point) GetY() float64 {
 	if m != nil {
 		return m.Y
 	}
@@ -72,11 +111,10 @@ func (m *TouchRequest) GetY() float64 {
 }
 
 type TouchReply struct {
-	X                    float64  `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    float64  `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Points               []*TouchReply_Point `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
 }
 
 func (m *TouchReply) Reset()         { *m = TouchReply{} }
@@ -104,14 +142,54 @@ func (m *TouchReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TouchReply proto.InternalMessageInfo
 
-func (m *TouchReply) GetX() float64 {
+func (m *TouchReply) GetPoints() []*TouchReply_Point {
+	if m != nil {
+		return m.Points
+	}
+	return nil
+}
+
+type TouchReply_Point struct {
+	X                    float64  `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y                    float64  `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TouchReply_Point) Reset()         { *m = TouchReply_Point{} }
+func (m *TouchReply_Point) String() string { return proto.CompactTextString(m) }
+func (*TouchReply_Point) ProtoMessage()    {}
+func (*TouchReply_Point) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2bc2336598a3f7e0, []int{1, 0}
+}
+
+func (m *TouchReply_Point) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TouchReply_Point.Unmarshal(m, b)
+}
+func (m *TouchReply_Point) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TouchReply_Point.Marshal(b, m, deterministic)
+}
+func (m *TouchReply_Point) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TouchReply_Point.Merge(m, src)
+}
+func (m *TouchReply_Point) XXX_Size() int {
+	return xxx_messageInfo_TouchReply_Point.Size(m)
+}
+func (m *TouchReply_Point) XXX_DiscardUnknown() {
+	xxx_messageInfo_TouchReply_Point.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TouchReply_Point proto.InternalMessageInfo
+
+func (m *TouchReply_Point) GetX() float64 {
 	if m != nil {
 		return m.X
 	}
 	return 0
 }
 
-func (m *TouchReply) GetY() float64 {
+func (m *TouchReply_Point) GetY() float64 {
 	if m != nil {
 		return m.Y
 	}
@@ -120,22 +198,26 @@ func (m *TouchReply) GetY() float64 {
 
 func init() {
 	proto.RegisterType((*TouchRequest)(nil), "Protocol.TouchRequest")
+	proto.RegisterType((*TouchRequest_Point)(nil), "Protocol.TouchRequest.Point")
 	proto.RegisterType((*TouchReply)(nil), "Protocol.TouchReply")
+	proto.RegisterType((*TouchReply_Point)(nil), "Protocol.TouchReply.Point")
 }
 
 func init() { proto.RegisterFile("protocol.proto", fileDescriptor_2bc2336598a3f7e0) }
 
 var fileDescriptor_2bc2336598a3f7e0 = []byte{
-	// 130 bytes of a gzipped FileDescriptorProto
+	// 172 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x28, 0xca, 0x2f,
-	0xc9, 0x4f, 0xce, 0xcf, 0xd1, 0x03, 0x33, 0x84, 0x38, 0x02, 0xa0, 0x7c, 0x25, 0x2d, 0x2e, 0x9e,
-	0x90, 0xfc, 0xd2, 0xe4, 0x8c, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x21, 0x1e, 0x2e, 0xc6,
-	0x0a, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xc6, 0x20, 0xc6, 0x0a, 0x10, 0xaf, 0x52, 0x82, 0x09, 0xc2,
-	0xab, 0x54, 0xd2, 0xe0, 0xe2, 0x82, 0xaa, 0x2d, 0xc8, 0xa9, 0xc4, 0xa7, 0xd2, 0xc8, 0x89, 0x8b,
-	0xd3, 0x33, 0xaf, 0x24, 0xb5, 0x28, 0x2d, 0x31, 0x39, 0x55, 0xc8, 0x94, 0x8b, 0x15, 0xac, 0x4d,
-	0x48, 0x4c, 0x0f, 0x66, 0xad, 0x1e, 0xb2, 0x9d, 0x52, 0x22, 0x18, 0xe2, 0x05, 0x39, 0x95, 0x49,
-	0x6c, 0x60, 0xa7, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x94, 0x4d, 0x16, 0x47, 0xbc, 0x00,
-	0x00, 0x00,
+	0xc9, 0x4f, 0xce, 0xcf, 0xd1, 0x03, 0x33, 0x84, 0x38, 0x02, 0xa0, 0x7c, 0xa5, 0x4c, 0x2e, 0x9e,
+	0x90, 0xfc, 0xd2, 0xe4, 0x8c, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x21, 0x13, 0x2e, 0xb6,
+	0x82, 0xfc, 0xcc, 0xbc, 0x92, 0x62, 0x09, 0x46, 0x05, 0x66, 0x0d, 0x6e, 0x23, 0x19, 0x3d, 0x98,
+	0x52, 0x3d, 0x64, 0x75, 0x7a, 0x01, 0x20, 0x45, 0x41, 0x50, 0xb5, 0x52, 0xca, 0x5c, 0xac, 0x60,
+	0x01, 0x21, 0x1e, 0x2e, 0xc6, 0x0a, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xc6, 0x20, 0xc6, 0x0a, 0x10,
+	0xaf, 0x52, 0x82, 0x09, 0xc2, 0xab, 0x54, 0x4a, 0xe5, 0xe2, 0x82, 0x1a, 0x51, 0x90, 0x53, 0x29,
+	0x64, 0x84, 0x66, 0x91, 0x14, 0x86, 0x45, 0x05, 0x39, 0x95, 0x64, 0x58, 0x63, 0xe4, 0xc4, 0xc5,
+	0xe9, 0x99, 0x57, 0x92, 0x5a, 0x94, 0x96, 0x98, 0x9c, 0x2a, 0x64, 0xca, 0xc5, 0x0a, 0x36, 0x4d,
+	0x48, 0x0c, 0xbb, 0x3f, 0xa4, 0x44, 0xb0, 0x59, 0x9b, 0xc4, 0x06, 0x0e, 0x26, 0x63, 0x40, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x49, 0xd4, 0xde, 0x69, 0x38, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.

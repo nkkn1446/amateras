@@ -7,11 +7,17 @@ service Interface {
 }
 
 message TouchRequest {
-  double x = 1;
-  double y = 2;
+  message Point {
+    double x = 1;
+    double y = 2;
+  }
+  repeated Point points = 1;
 }
 
 message TouchReply {
-  double x = 1;
-  double y = 2;
+  message Point {
+    double x = 1;
+    double y = 2;
+  }
+  repeated Point points = 1;
 }
