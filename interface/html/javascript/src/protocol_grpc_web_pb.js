@@ -89,27 +89,27 @@ proto.Protocol.InterfacePromiseClient =
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Protocol.TouchRequest,
- *   !proto.Protocol.TouchReply>}
+ *   !proto.Protocol.Request,
+ *   !proto.Protocol.Reply>}
  */
 const methodInfo_Interface_Touch = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.Protocol.TouchReply,
-  /** @param {!proto.Protocol.TouchRequest} request */
+  proto.Protocol.Reply,
+  /** @param {!proto.Protocol.Request} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Protocol.TouchReply.deserializeBinary
+  proto.Protocol.Reply.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Protocol.TouchRequest} request The
+ * @param {!proto.Protocol.Request} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.Protocol.TouchReply)}
+ * @param {function(?grpc.web.Error, ?proto.Protocol.Reply)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.Protocol.TouchReply>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.Protocol.Reply>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.Protocol.InterfaceClient.prototype.touch =
@@ -124,11 +124,11 @@ proto.Protocol.InterfaceClient.prototype.touch =
 
 
 /**
- * @param {!proto.Protocol.TouchRequest} request The
+ * @param {!proto.Protocol.Request} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.Protocol.TouchReply>}
+ * @return {!Promise<!proto.Protocol.Reply>}
  *     A native promise that resolves to the response
  */
 proto.Protocol.InterfacePromiseClient.prototype.touch =
