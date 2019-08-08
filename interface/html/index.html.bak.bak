@@ -1,0 +1,28 @@
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="https://ja.videog.jp/r/js/videog_player/1.6.7/videogplayer/videogplayer.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div style="margin:auto" id="video_tag_id"></div>
+
+  <script src="https://ja.videog.jp/r/js/videog_player/1.6.7/videogplayer/videogplayer.min.js"></script>
+  <script>
+
+    const options = {
+      player_width:'960px',
+      player_height:'540px',
+      play_list: [
+        {
+          sources: [
+            {
+              file: 'http://ishikin.test.multicdnet.com:8081/test/a/playlist.m3u8',
+            },
+          ],
+        },
+      ],
+    };
+
+    const player = videogplayer('video_tag_id', options);
+  </script>
+</body>
