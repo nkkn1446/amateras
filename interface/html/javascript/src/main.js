@@ -92,7 +92,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://54.172.189.101:8080', {}, {});
+        var client = new InterfaceClient('http://3.82.197.203:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
 	    var points = reply.getPointsList();
