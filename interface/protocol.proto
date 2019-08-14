@@ -30,6 +30,7 @@ message Reply {
     Type type = 1;
     double x = 2;
     double y = 3;
+    string str = 4;
   }
   repeated Point points = 1;
 }

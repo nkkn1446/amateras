@@ -65,7 +65,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://54.211.131.36:8080', {}, {});
+        var client = new InterfaceClient('http://192.168.0.105:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
 	    var points = reply.getPointsList();
@@ -73,7 +73,8 @@ var maxDelay = 16;
 	    for (var i = 0; i < points.length; ++i) {
 		s += "type=" + typeList[points[i].getType()] + ",";
                 s += "x=" + points[i].getX() + ",";
-                s += "y=" + points[i].getY() + "<br>";
+                s += "y=" + points[i].getY() + ",";
+                s += "str=" + points[i].getStr() + "<br>";
 	    }
 	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
 	});
