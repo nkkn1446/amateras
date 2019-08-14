@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#sudo apt-get install autoconf automake libtool curl make g++ unzip -y
+#sudo apt-get install autoconf automake libtool curl make g++ unzip apache2 -y
 #git clone https://github.com/protocolbuffers/protobuf.git
 
 #cd protobuf
