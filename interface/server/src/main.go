@@ -22,6 +22,8 @@ import (
 	pb "./protocol"
 	"log"
 	"net"
+	"os/exec"
+	"strconv"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -37,11 +39,20 @@ type server struct{}
 func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 	points := []*pb.Reply_Point{}
 	for i := 0; i < len(in.Points); i++ {
+		if in.Points[i].Type != 0 {
+			// タッチ以外は無視
+			continue
+		}
+		str := ""
+		err := exec.Command("adb", "shell", "input", "touchscreen", "tap", strconv.Itoa(int(in.Points[i].X)), strconv.Itoa(int(in.Points[i].Y))).Run()
+		if err != nil {
+			str = err.Error()
+		}
 		point := pb.Reply_Point{
 			Type: pb.Reply_Point_Type(in.Points[i].Type),
 			X: in.Points[i].X,
 			Y: in.Points[i].Y,
-		        Str: "test"}
+		        Str: str}
 		points = append(points, &point)
 	}
 	return &pb.Reply{Points: points}, nil

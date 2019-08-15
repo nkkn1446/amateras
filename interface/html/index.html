@@ -1,34 +1,33 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-  <link href="https://ja.videog.jp/r/js/videog_player/1.6.7/videogplayer/videogplayer.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <div style="margin:auto" id="video_tag_id"></div>
+  <div style="margin:center" id="video_tag_id"></div>
   <div id="disp"></div>
 
   <script src="javascrip/a.js"></script>
-  <script src="https://ja.videog.jp/r/js/videog_player/1.6.7/videogplayer/videogplayer.min.js"></script>
-  <script>
+  <script src="javascrip/sldp-v2.12.2.min.js"></script>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", initPlayer);
 
-    const options = {
-      player_width:'640px',
-      player_height:'360px',
-      autostart: true,
-      controls: 'hide',
-      play_list: [
-        {
-          sources: [
-            {
-              file: 'https://ishikin.test.multicdnet.com/test/a/playlist.m3u8',
-            },
-          ],
-        },
-      ],
+    function initPlayer(){
+      sldpPlayer = SLDP.init({
+        container:          'video_tag_id',
+        stream_url:         "wss://ishikin.test.multicdnet.com/test/a",
+        height:             640,
+        width:              360,
+        reconnects:         true,
+        autoplay:           true,
+        muted:              true,
+        muteable:           true,
+        controls:           false
+      });
     };
 
-    const player = videogplayer('video_tag_id', options);
+    function removePlayer(){
+      sldpPlayer.destroy()
+    }
   </script>
 </body>
