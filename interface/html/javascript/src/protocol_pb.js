@@ -1,3 +1,4 @@
+// source: protocol.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -377,9 +378,12 @@ proto.Protocol.Request.Point.prototype.getType = function() {
 };
 
 
-/** @param {!proto.Protocol.Request.Point.Type} value */
+/**
+ * @param {!proto.Protocol.Request.Point.Type} value
+ * @return {!proto.Protocol.Request.Point} returns this
+ */
 proto.Protocol.Request.Point.prototype.setType = function(value) {
-  jspb.Message.setProto3EnumField(this, 1, value);
+  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -392,9 +396,12 @@ proto.Protocol.Request.Point.prototype.getX = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.Protocol.Request.Point} returns this
+ */
 proto.Protocol.Request.Point.prototype.setX = function(value) {
-  jspb.Message.setProto3FloatField(this, 2, value);
+  return jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
@@ -407,9 +414,12 @@ proto.Protocol.Request.Point.prototype.getY = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.Protocol.Request.Point} returns this
+ */
 proto.Protocol.Request.Point.prototype.setY = function(value) {
-  jspb.Message.setProto3FloatField(this, 3, value);
+  return jspb.Message.setProto3FloatField(this, 3, value);
 };
 
 
@@ -423,9 +433,12 @@ proto.Protocol.Request.prototype.getPointsList = function() {
 };
 
 
-/** @param {!Array<!proto.Protocol.Request.Point>} value */
+/**
+ * @param {!Array<!proto.Protocol.Request.Point>} value
+ * @return {!proto.Protocol.Request} returns this
+*/
 proto.Protocol.Request.prototype.setPointsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -441,9 +454,10 @@ proto.Protocol.Request.prototype.addPoints = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.Protocol.Request} returns this
  */
 proto.Protocol.Request.prototype.clearPointsList = function() {
-  this.setPointsList([]);
+  return this.setPointsList([]);
 };
 
 
@@ -735,9 +749,12 @@ proto.Protocol.Reply.Point.prototype.getType = function() {
 };
 
 
-/** @param {!proto.Protocol.Reply.Point.Type} value */
+/**
+ * @param {!proto.Protocol.Reply.Point.Type} value
+ * @return {!proto.Protocol.Reply.Point} returns this
+ */
 proto.Protocol.Reply.Point.prototype.setType = function(value) {
-  jspb.Message.setProto3EnumField(this, 1, value);
+  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -750,9 +767,12 @@ proto.Protocol.Reply.Point.prototype.getX = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.Protocol.Reply.Point} returns this
+ */
 proto.Protocol.Reply.Point.prototype.setX = function(value) {
-  jspb.Message.setProto3FloatField(this, 2, value);
+  return jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
@@ -765,9 +785,12 @@ proto.Protocol.Reply.Point.prototype.getY = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.Protocol.Reply.Point} returns this
+ */
 proto.Protocol.Reply.Point.prototype.setY = function(value) {
-  jspb.Message.setProto3FloatField(this, 3, value);
+  return jspb.Message.setProto3FloatField(this, 3, value);
 };
 
 
@@ -780,9 +803,12 @@ proto.Protocol.Reply.Point.prototype.getStr = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.Protocol.Reply.Point} returns this
+ */
 proto.Protocol.Reply.Point.prototype.setStr = function(value) {
-  jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -796,9 +822,12 @@ proto.Protocol.Reply.prototype.getPointsList = function() {
 };
 
 
-/** @param {!Array<!proto.Protocol.Reply.Point>} value */
+/**
+ * @param {!Array<!proto.Protocol.Reply.Point>} value
+ * @return {!proto.Protocol.Reply} returns this
+*/
 proto.Protocol.Reply.prototype.setPointsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -814,9 +843,10 @@ proto.Protocol.Reply.prototype.addPoints = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.Protocol.Reply} returns this
  */
 proto.Protocol.Reply.prototype.clearPointsList = function() {
-  this.setPointsList([]);
+  return this.setPointsList([]);
 };
 
 
