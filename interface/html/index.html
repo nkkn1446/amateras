@@ -1,10 +1,10 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 </head>
 
 <body>
-  <div style="margin:center" id="video_tag_id"></div>
+  <div style="width:640;margin:0 auto;padding:0" id="video_tag_id"></div>
   <div id="disp"></div>
 
   <script src="javascrip/a.js"></script>
@@ -16,8 +16,8 @@
       sldpPlayer = SLDP.init({
         container:          'video_tag_id',
         stream_url:         "wss://ishikin.test.multicdnet.com/test/a",
-        height:             640,
-        width:              360,
+        height:             360,
+        width:              640,
         reconnects:         true,
         autoplay:           true,
         muted:              true,
