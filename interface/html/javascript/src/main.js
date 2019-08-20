@@ -3,7 +3,7 @@ var $ = require('jquery');
 const {Request} = require('./protocol_pb.js');
 const {InterfaceClient} = require('./protocol_grpc_web_pb.js');
 
-function getTouch(t, clientRect) {
+function getPoint(t, clientRect) {
     // 画面のタッチ位置を取得
     var touchX = t.pageX;
     var touchY = t.pageY;
@@ -25,7 +25,7 @@ ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        touches[touches.length] = getTouch(e.changedTouches[i], clientRect);
+        touches[touches.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 var moves = [];
@@ -33,7 +33,7 @@ ac.addEventListener("touchmove", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        moves[moves.length] = getTouch(e.changedTouches[i], clientRect);
+        moves[moves.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 var ends = [];
@@ -42,7 +42,7 @@ ac.addEventListener("touchend", function(e) {
     // e.preventDefault();     // デフォルトイベントをキャンセル
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        ends[ends.length] = getTouch(e.changedTouches[i], clientRect);
+        ends[ends.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 
@@ -89,7 +89,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://192.168.0.105:8080', {}, {});
+        var client = new InterfaceClient('http://192.168.0.106:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
 	    var points = reply.getPointsList();
