@@ -1,11 +1,20 @@
 #!/bin/bash
 
-#https://github.com/totsuan/janus-gateway/tree/develop
+#sudo apt-get install software-properties-common
+#sudo add-apt-repository ppa:certbot/certbot
+#sudo apt-get update
 
 #sudo apt install gtk-doc-tools \
 #	aptitude \
 #	git \
+#	apache2 \
+#	letsencrypt \
+#	python-certbot-apache \
 #	-y
+
+#sudo a2enmod ssl
+#sudo letsencrypt --apache
+#sudo service apache2 restart
 
 #sudo aptitude install libmicrohttpd-dev libjansson-dev \
 #	libssl1.0-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev \
@@ -33,7 +42,9 @@
 #sudo aptitude install graphviz -y
 
 #ubuntu bionic
-#sudo apt cmake install bison flex -y
+#sudo apt install cmake bison flex -y
+
+#upload
 #tar xvf doxygen-1.8.11.src.tar.gz
 
 #mkdir build
@@ -49,3 +60,5 @@
 #make -j2
 #sudo make install
 #sudo make configs
+
+#sudo ln -s /opt/janus/bin/janus /usr/local/bin/
