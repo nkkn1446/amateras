@@ -18,7 +18,7 @@ function getPoint(t, clientRect) {
     return {X:x,Y:y};
 }
 
-var ac = document.getElementById("video_tag_id"); // canvas要素のオブジェクトを取得
+var ac = document.getElementById("stream"); // canvas要素のオブジェクトを取得
 // 画面に指が触れたときの処理を定義
 var touches = [];
 function cleanTouches() {
@@ -113,7 +113,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://122.103.121.94:8080', {}, {});
+        var client = new InterfaceClient('https://jitaku.amateras.ga:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
 	    var points = reply.getPointsList();
