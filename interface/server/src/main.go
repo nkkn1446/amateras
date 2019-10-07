@@ -44,14 +44,14 @@ func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 			continue
 		}
 		str := ""
-		err := exec.Command("adb", "shell", "input", "touchscreen", "tap", strconv.Itoa(int(in.Points[i].X)), strconv.Itoa(int(in.Points[i].Y))).Run()
+		err := exec.Command("adb", "shell", "input", "touchscreen", "tap", strconv.Itoa(int(in.Points[i].X * 3.0)), strconv.Itoa(int(in.Points[i].Y * 3.0))).Run()
 		if err != nil {
 			str = err.Error()
 		}
 		point := pb.Reply_Point{
 			Type: pb.Reply_Point_Type(in.Points[i].Type),
-			X: in.Points[i].X,
-			Y: in.Points[i].Y,
+			X: in.Points[i].X * 3.0,
+			Y: in.Points[i].Y * 3.0,
 		        Str: str}
 		points = append(points, &point)
 	}
