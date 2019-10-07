@@ -13037,7 +13037,7 @@ var $ = require('jquery');
 const {Request} = require('./protocol_pb.js');
 const {InterfaceClient} = require('./protocol_grpc_web_pb.js');
 
-function getTouch(t, clientRect) {
+function getPoint(t, clientRect) {
     // 画面のタッチ位置を取得
     var touchX = t.pageX;
     var touchY = t.pageY;
@@ -13052,31 +13052,55 @@ function getTouch(t, clientRect) {
     return {X:x,Y:y};
 }
 
-var ac = document.getElementById("video_tag_id"); // canvas要素のオブジェクトを取得
-var touches = [];
+var ac = document.getElementById("stream"); // canvas要素のオブジェクトを取得
 // 画面に指が触れたときの処理を定義
+var touches = [];
+function cleanTouches() {
+    for (var i = 0; i < touches.length; ++i) {
+    	delete touches[i];
+    }
+    touches = [];
+}
 ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanTouches();
+
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        touches[touches.length] = getTouch(e.changedTouches[i], clientRect);
+        touches[touches.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 var moves = [];
+function cleanMoves() {
+    for (var i = 0; i < moves.length; ++i) {
+        delete moves[i];
+    }
+    moves = [];
+}
 ac.addEventListener("touchmove", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanMoves();
+
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        moves[moves.length] = getTouch(e.changedTouches[i], clientRect);
+        moves[moves.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 var ends = [];
+function cleanEnds() {
+    for (var i = 0; i < ends.length; ++i) {
+        delete ends[i];
+    }
+    ends = [];
+}
 ac.addEventListener("touchend", function(e) {
     // 指が離れているのでイベントのキャンセルは不要
     // e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanEnds();
+
     var clientRect = this.getBoundingClientRect();
     for (var i = 0; i < e.changedTouches.length; ++i) {
-        ends[ends.length] = getTouch(e.changedTouches[i], clientRect);
+        ends[ends.length] = getPoint(e.changedTouches[i], clientRect);
     }
 });
 
@@ -13123,7 +13147,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://192.168.0.105:8080', {}, {});
+        var client = new InterfaceClient('https://jitaku.amateras.ga:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";             // 変数sを初期化
 	    var points = reply.getPointsList();
@@ -13136,18 +13160,9 @@ var maxDelay = 16;
 	    }
 	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
 	});
-        for (var i = 0; i < touches.length; ++i) {
-            delete touches[i];
-        }
-        touches = [];
-        for (var i = 0; i < moves.length; ++i) {
-            delete moves[i];
-        }
-        moves = [];
-        for (var i = 0; i < ends.length; ++i) {
-            delete ends[i];
-        }
-        ends = [];
+	cleanTouches();
+	cleanMoves();
+	cleanEnds();
 
 	// 処理時間を加味して遅延させる
 	var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);
