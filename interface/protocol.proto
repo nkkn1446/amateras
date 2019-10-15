@@ -33,4 +33,5 @@ message Reply {
     string str = 4;
   }
   repeated Point points = 1;
+  string str = 2;
 }
