@@ -23,8 +23,12 @@ import (
 	"log"
 	"net"
 	"os/exec"
-	"strconv"
+	"fmt"
+	"time"
+	"bytes"
+	"strings"
 
+	"encoding/binary"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -36,26 +40,79 @@ const (
 
 type server struct{}
 
+type Event struct {
+  Timeval uint64
+  Typo uint16
+  Code uint16
+  Value uint32
+}
+
+func AppendEvent(buf *bytes.Buffer, typo uint16, code uint16, value uint32) {
+	e := Event{}
+	e.Typo = typo
+	e.Code = code
+	e.Value = value
+	binary.Write(buf, binary.LittleEndian, &e)
+}
+
 func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 	points := []*pb.Reply_Point{}
+	command := make([]byte, 0, 4096)
+	command = append(command, "\""...)
 	for i := 0; i < len(in.Points); i++ {
-		if in.Points[i].Type != 0 {
-			// タッチ以外は無視
-			continue
+		buf := bytes.NewBuffer(make([]byte, 0, 16 * 6))
+
+		// タップ
+		if in.Points[i].Type == pb.Request_Point_Touch {
+			AppendEvent(buf, 3, 57, 0)
+			AppendEvent(buf, 3, 48, 0)
+			AppendEvent(buf, 3, 58, 129)
 		}
-		str := ""
-		err := exec.Command("adb", "shell", "input", "touchscreen", "tap", strconv.Itoa(int(in.Points[i].X * 3.0)), strconv.Itoa(int(in.Points[i].Y * 3.0))).Run()
-		if err != nil {
-			str = err.Error()
+		// 座標移動
+		if in.Points[i].Type == pb.Request_Point_Touch ||
+		   in.Points[i].Type == pb.Request_Point_Move {
+			// 縦横は画面回転前に準拠
+			AppendEvent(buf, 3, 53, uint32((360 - in.Points[i].Y) / 360.0 * 32767.0))
+			AppendEvent(buf, 3, 54, uint32(in.Points[i].X / 640.0 * 32767.0))
 		}
+		// リリース
+		if in.Points[i].Type == pb.Request_Point_End {
+			AppendEvent(buf, 3, 58, 0)
+			AppendEvent(buf, 3, 57, 4294967295)
+		}
+		// 終了
+		AppendEvent(buf, 0, 0, 0)
+
+		for i := 0; i < len(buf.Bytes()); i++ {
+			command = append(command, fmt.Sprintf("\\x%02x", uint8(buf.Bytes()[i]))...)
+		}
+
 		point := pb.Reply_Point{
 			Type: pb.Reply_Point_Type(in.Points[i].Type),
 			X: in.Points[i].X * 3.0,
 			Y: in.Points[i].Y * 3.0,
-		        Str: str}
+		        Str: ""}
 		points = append(points, &point)
 	}
-	return &pb.Reply{Points: points}, nil
+
+	command = append(command, "\" > /dev/input/event1"...)
+
+	var str string
+	start := time.Now();
+	cmd := exec.Command("adb", "shell", "print", "-n", string(command))
+	cmd.Stdin = strings.NewReader(str)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		str = err.Error()
+	} else if out.String() != "" {
+		str = out.String()
+	} else {
+		str = fmt.Sprintf("%f", time.Now().Sub(start).Seconds());
+	}
+
+	return &pb.Reply{Points: points, Str: str}, nil
 }
 
 func main() {
