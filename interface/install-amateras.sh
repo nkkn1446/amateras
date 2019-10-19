@@ -15,6 +15,7 @@
 #git clone https://github.com/grpc/grpc-web
 
 #cd grpc-web
+#git checkout refs/tags/1.0.4
 #sudo apt-get install libprotoc-dev
 #sudo make -j2 install-plugin
 
