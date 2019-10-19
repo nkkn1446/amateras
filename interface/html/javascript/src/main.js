@@ -115,7 +115,10 @@ var maxDelay = 16;
     
         var client = new InterfaceClient('https://jitaku.amateras.ga:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
-            var s = "";             // 変数sを初期化
+            var s = "";
+	    if (reply.getStr() != "") {
+	       s = reply.getStr() + "<br>";
+	    }
 	    var points = reply.getPointsList();
 	    var typeList = {0:"touch",1:"move",2:"end"};
 	    for (var i = 0; i < points.length; ++i) {
@@ -123,6 +126,7 @@ var maxDelay = 16;
                 s += "x=" + points[i].getX() + ",";
                 s += "y=" + points[i].getY() + ",";
                 s += "str=" + points[i].getStr() + "<br>";
+		console.log(typeList[points[i].getType()]);
 	    }
 	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
 	});
