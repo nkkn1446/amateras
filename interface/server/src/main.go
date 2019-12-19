@@ -89,8 +89,8 @@ func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 
 		point := pb.Reply_Point{
 			Type: pb.Reply_Point_Type(in.Points[i].Type),
-			X: in.Points[i].X * 3.0,
-			Y: in.Points[i].Y * 3.0,
+			X: in.Points[i].X,
+			Y: in.Points[i].Y,
 		        Str: ""}
 		points = append(points, &point)
 	}
