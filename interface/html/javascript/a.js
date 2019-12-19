@@ -13052,7 +13052,7 @@ function getPoint(t, clientRect) {
     return {X:x,Y:y};
 }
 
-var ac = document.getElementById("stream"); // canvas要素のオブジェクトを取得
+var ac = document.getElementById("remote_video"); // canvas要素のオブジェクトを取得
 // 画面に指が触れたときの処理を定義
 var touches = [];
 function cleanTouches() {
@@ -13149,7 +13149,10 @@ var maxDelay = 16;
     
         var client = new InterfaceClient('https://jitaku.amateras.ga:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
-            var s = "";             // 変数sを初期化
+            var s = "";
+	    if (reply.getStr() != "") {
+	       s = reply.getStr() + "<br>";
+	    }
 	    var points = reply.getPointsList();
 	    var typeList = {0:"touch",1:"move",2:"end"};
 	    for (var i = 0; i < points.length; ++i) {
@@ -13157,6 +13160,7 @@ var maxDelay = 16;
                 s += "x=" + points[i].getX() + ",";
                 s += "y=" + points[i].getY() + ",";
                 s += "str=" + points[i].getStr() + "<br>";
+		console.log(typeList[points[i].getType()]);
 	    }
 	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
 	});
@@ -13821,7 +13825,8 @@ proto.Protocol.Reply.prototype.toObject = function(opt_includeInstance) {
 proto.Protocol.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
     pointsList: jspb.Message.toObjectList(msg.getPointsList(),
-    proto.Protocol.Reply.Point.toObject, includeInstance)
+    proto.Protocol.Reply.Point.toObject, includeInstance),
+    str: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -13863,6 +13868,10 @@ proto.Protocol.Reply.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.Protocol.Reply.Point.deserializeBinaryFromReader);
       msg.addPoints(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStr(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -13898,6 +13907,13 @@ proto.Protocol.Reply.serializeBinaryToWriter = function(message, writer) {
       1,
       f,
       proto.Protocol.Reply.Point.serializeBinaryToWriter
+    );
+  }
+  f = message.getStr();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
     );
   }
 };
@@ -14167,6 +14183,24 @@ proto.Protocol.Reply.prototype.addPoints = function(opt_value, opt_index) {
  */
 proto.Protocol.Reply.prototype.clearPointsList = function() {
   return this.setPointsList([]);
+};
+
+
+/**
+ * optional string str = 2;
+ * @return {string}
+ */
+proto.Protocol.Reply.prototype.getStr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.Protocol.Reply} returns this
+ */
+proto.Protocol.Reply.prototype.setStr = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

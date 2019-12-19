@@ -18,7 +18,7 @@ function getPoint(t, clientRect) {
     return {X:x,Y:y};
 }
 
-var ac = document.getElementById("stream"); // canvas要素のオブジェクトを取得
+var ac = document.getElementById("remote_video"); // canvas要素のオブジェクトを取得
 // 画面に指が触れたときの処理を定義
 var touches = [];
 function cleanTouches() {
