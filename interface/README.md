@@ -4,7 +4,7 @@
 
 * TypeScript
 * grpc-web
-* VideogPlayer
+* WebRTC
 * apache2（html以下を差し替え）
 
 ## Proxy
@@ -68,8 +68,9 @@ sh gen.sh
 │       ├── node_modules
 │       ├── package-lock.json
 │       ├── package.json
-│       └── src
-├── install.sh・・・関連ファイルのインストールシェル
+│       ├── src
+│       └── webrtc.js
+├── install-amateras.sh・・・関連ファイルのインストールシェル
 ├── protocol.proto・・・grpc IDLファイル
 ├── proxy
 │   ├── build
