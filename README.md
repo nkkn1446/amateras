@@ -6,7 +6,7 @@ Ubuntu上でapkを実行してHTML5向けにストリーミング配信する（
 ## TODO
 - [ ] x86 →ARM
 - [ ] AndroidEmulator →~~Anbox~~ bluestacks？NoxPlayer？genymotion？
-- [ ] WebRTCでWindowキャプチャ or FFMPEGでキャプチャして配信
+- [x] WebRTCでWindowキャプチャ ~~or FFMPEGでキャプチャして配信~~
 - [ ] momo →libwebrtcネイティブ
 - ~~[ ] grpc,envoy →WebRTC DataChannel~~
 - [ ] adb →マウスエミュレート
