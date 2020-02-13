@@ -1,0 +1,16 @@
+cflags = -Wall
+
+rule cc
+  command = gcc $cflags -c $in -o $out
+rule archive
+  command = ar -r $out $in
+rule link
+  command = gcc $cflags -o $out $in $libs
+
+build a.out: link test.o libwindow.a
+  libs = -lX11 -lXtst -lXinerama -lxkbcommon -lm
+build libwindow.a: archive window.o xdo/xdo.o xdo/xdo_search.o
+build window.o: cc window.c
+build xdo/xdo.o: cc xdo/xdo.c
+build xdo/xdo_search.o: cc xdo/xdo_search.c
+build test.o: cc test.c
