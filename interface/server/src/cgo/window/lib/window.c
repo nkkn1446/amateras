@@ -22,11 +22,6 @@ void window_free(context_t context) {
   }
 }
 
-void window_hoge() {
-	window_free(window_new());
-}
-
-
 context_t search(context_t context, const char *window_name) {
   Window *list = NULL;
   xdo_search_t search;

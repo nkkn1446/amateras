@@ -8,10 +8,6 @@ import "C"
 
 type Context C.context_t
 
-func Hoge() {
-	C.window_hoge()
-}
-
 func Free(context Context) {
 	C.window_free(C.context_t(context))
 }
