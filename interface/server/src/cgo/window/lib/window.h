@@ -15,7 +15,6 @@ typedef struct context {
   int have_last_mouse;
 } context_t;
 
-void window_hoge();
 context_t window_new();
 void window_free(context_t context);
 context_t search(context_t context, const char *window_name);
