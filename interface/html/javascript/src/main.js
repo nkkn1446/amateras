@@ -113,29 +113,34 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('http://jitaku.amateras.ga:8080', {}, {});
-        client.touch(request, {}, (err, reply) => {
-            var s = "";
-	    if (reply.getStr() != "") {
-	       s = reply.getStr() + "<br>";
-	    }
-	    var points = reply.getPointsList();
-	    var typeList = {0:"touch",1:"move",2:"end"};
-	    for (var i = 0; i < points.length; ++i) {
-		s += "type=" + typeList[points[i].getType()] + ",";
-                s += "x=" + points[i].getX() + ",";
-                s += "y=" + points[i].getY() + ",";
-                s += "str=" + points[i].getStr() + "<br>";
-		console.log(typeList[points[i].getType()]);
-	    }
-	    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
+	let promise = new Promise((resolve, reject) => {
+        	var client = new InterfaceClient('http://jitaku.amateras.ga:8080', {}, {});
+        	client.touch(request, {}, (err, reply) => {
+        	    var s = "";
+		    if (reply.getStr() != "") {
+		       s = reply.getStr() + "<br>";
+		    }
+		    var points = reply.getPointsList();
+		    var typeList = {0:"touch",1:"move",2:"end"};
+		    for (var i = 0; i < points.length; ++i) {
+			s += "type=" + typeList[points[i].getType()] + ",";
+        	        s += "x=" + points[i].getX() + ",";
+        	        s += "y=" + points[i].getY() + ",";
+        	        s += "str=" + points[i].getStr() + "<br>";
+			console.log(typeList[points[i].getType()]);
+		    }
+		    document.getElementById("disp").innerHTML = s;  // 生成した文字列を画面に表示
+		    resolve();
+		});
 	});
-	cleanTouches();
-	cleanMoves();
-	cleanEnds();
+	promise.then(function() {
+		cleanTouches();
+		cleanMoves();
+		cleanEnds();
 
-	// 処理時間を加味して遅延させる
-	var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);
-	loop(nextDelay);
+		// 処理時間を加味して遅延させる
+		var nextDelay = Math.max(maxDelay - (Date.now() - startTime), 0);
+		loop(nextDelay);
+	});
     }, delay);
 })(maxDelay);
