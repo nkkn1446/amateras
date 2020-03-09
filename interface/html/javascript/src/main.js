@@ -113,7 +113,7 @@ var maxDelay = 16;
         var request = new Request();
         request.setPointsList(points);
     
-        var client = new InterfaceClient('https://jitaku.amateras.ga:8080', {}, {});
+        var client = new InterfaceClient('http://jitaku.amateras.ga:8080', {}, {});
         client.touch(request, {}, (err, reply) => {
             var s = "";
 	    if (reply.getStr() != "") {
