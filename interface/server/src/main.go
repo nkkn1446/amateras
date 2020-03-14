@@ -20,15 +20,12 @@ package main
 
 import (
 	pb "./protocol"
+	"./cgo/window"
 	"log"
 	"net"
-	"os/exec"
 	"fmt"
 	"time"
-	"bytes"
-	"strings"
 
-	"encoding/binary"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -39,83 +36,46 @@ const (
 )
 
 type server struct{}
-
-type Event struct {
-  Timeval uint64
-  Typo uint16
-  Code uint16
-  Value uint32
-}
-
-func AppendEvent(buf *bytes.Buffer, typo uint16, code uint16, value uint32) {
-	e := Event{}
-	e.Typo = typo
-	e.Code = code
-	e.Value = value
-	binary.Write(buf, binary.LittleEndian, &e)
-}
+var wcontext window.Context
+var wx int
+var wy int
 
 func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 	points := []*pb.Reply_Point{}
-	command := make([]byte, 0, 4096)
-	command = append(command, "\""...)
-	for i := 0; i < len(in.Points); i++ {
-		buf := bytes.NewBuffer(make([]byte, 0, 16 * 6))
 
-		// タップ
-		if in.Points[i].Type == pb.Request_Point_Touch {
-			AppendEvent(buf, 3, 57, 0)
-			AppendEvent(buf, 3, 48, 0)
-			AppendEvent(buf, 3, 58, 129)
-		}
+	var str string
+	start := time.Now();
+	for i := 0; i < len(in.Points); i++ {
 		// 座標移動
 		if in.Points[i].Type == pb.Request_Point_Touch ||
-		   in.Points[i].Type == pb.Request_Point_Move {
-			// 縦横は画面回転前に準拠
-			AppendEvent(buf, 3, 53, uint32((360 - in.Points[i].Y) / 360.0 * 32767.0))
-			AppendEvent(buf, 3, 54, uint32(in.Points[i].X / 640.0 * 32767.0))
+		in.Points[i].Type == pb.Request_Point_Move {
+			wcontext = window.MouseMove(wcontext, wx + int(in.Points[i].X * 2.0), wy + int(in.Points[i].Y * 2.0))
+		}
+		// タップ
+		if in.Points[i].Type == pb.Request_Point_Touch {
+			wcontext = window.MouseDown(wcontext, 1)
 		}
 		// リリース
 		if in.Points[i].Type == pb.Request_Point_End {
-			AppendEvent(buf, 3, 58, 0)
-			AppendEvent(buf, 3, 57, 4294967295)
-		}
-		// 終了
-		AppendEvent(buf, 0, 0, 0)
-
-		for i := 0; i < len(buf.Bytes()); i++ {
-			command = append(command, fmt.Sprintf("\\x%02x", uint8(buf.Bytes()[i]))...)
+			wcontext = window.MouseUp(wcontext, 1)
 		}
 
 		point := pb.Reply_Point{
 			Type: pb.Reply_Point_Type(in.Points[i].Type),
-			X: in.Points[i].X * 3.0,
-			Y: in.Points[i].Y * 3.0,
-		        Str: ""}
-		points = append(points, &point)
+			X: in.Points[i].X,
+			Y: in.Points[i].Y,
+			Str: ""}
+			points = append(points, &point)
 	}
 
-	command = append(command, "\" > /dev/input/event1"...)
-
-	var str string
-	start := time.Now();
-	cmd := exec.Command("adb", "shell", "print", "-n", string(command))
-	cmd.Stdin = strings.NewReader(str)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		str = err.Error()
-	} else if out.String() != "" {
-		str = out.String()
-	} else {
-		str = fmt.Sprintf("%f", time.Now().Sub(start).Seconds());
-	}
+	str = fmt.Sprintf("%f", time.Now().Sub(start).Seconds());
 
 	return &pb.Reply{Points: points, Str: str}, nil
 }
 
 func main() {
+	wcontext, wx, wy, _, _, _ = window.GetWindowGeometry(window.WindowActivate(window.Search(window.New(), "Android")))
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -127,4 +87,5 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+	window.Free(wcontext)
 }
