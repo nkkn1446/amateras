@@ -1,3 +1,4 @@
 #!/bin/bash
 
+ninja -C src/cgo/window/lib
 go build -o a.out src/main.go
