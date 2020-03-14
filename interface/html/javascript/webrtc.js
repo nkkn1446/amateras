@@ -4,8 +4,7 @@ let peerConnection = null;
 let candidates = [];
 let hasReceivedSdp = false;
 
-//const wsUrl = 'ws://' + '192.168.0.102:8081/ws';
-const wsUrl = 'ws://' + '202.215.58.230:8081/ws';
+const wsUrl = 'ws://' + 'jitaku.amateras.ga:8081/ws';
 const ws = new WebSocket(wsUrl);
 ws.onopen = function (evt) {
     console.log('ws open()');
