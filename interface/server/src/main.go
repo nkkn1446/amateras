@@ -49,7 +49,7 @@ func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 		// 座標移動
 		if in.Points[i].Type == pb.Request_Point_Touch ||
 		in.Points[i].Type == pb.Request_Point_Move {
-			wcontext = window.MouseMove(wcontext, wx + int(in.Points[i].X * 2.0), wy + int(in.Points[i].Y * 2.0))
+			wcontext = window.MouseMove(wcontext, wx + int(in.Points[i].X), wy + int(in.Points[i].Y))
 		}
 		// タップ
 		if in.Points[i].Type == pb.Request_Point_Touch {
