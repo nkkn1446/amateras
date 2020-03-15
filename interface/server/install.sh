@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo snap install go
-sudo apt install ninja-build libx11-dev libxtst-dev libxinerama-dev libxkbcommon-dev
+sudo apt install ninja-build libx11-dev libxtst-dev libxinerama-dev libxkbcommon-dev xdotool
 
 go get -u google.golang.org/grpc
 go get -u github.com/golang/protobuf/proto
