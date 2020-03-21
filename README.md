@@ -10,7 +10,7 @@ Ubuntu上でapkを実行してHTML5向けにストリーミング配信する（
 - [ ] momo →libwebrtcネイティブ
 - ~~[ ] grpc,envoy →WebRTC DataChannel~~
 - [x] adb →マウスエミュレート
-- [ ] サウンドキャプチャ
+- [x] サウンドキャプチャ
 
 ## ライセンス
 Apache License 2.0
