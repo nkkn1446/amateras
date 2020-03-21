@@ -2,7 +2,7 @@
 
 ## html(フロントエンド)
 
-* TypeScript
+* JavaScript
 * grpc-web
 * WebRTC
 * apache2（html以下を差し替え）
