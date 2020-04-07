@@ -1,6 +1,12 @@
 #!/bin/bash
 
 #
+# node install
+#
+
+npm install
+
+#
 # protobuf install
 #
 
