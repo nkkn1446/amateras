@@ -1,4 +1,4 @@
-const {Request} = require('../../_proto/protocol_pb.js');
+const {Request} = require('./protocol_pb.js');
 
 function getPoint(t, clientRect) {
     // 画面のタッチ位置を取得

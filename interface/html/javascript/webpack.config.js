@@ -10,7 +10,7 @@ module.exports = {
   entry: './ts/index.ts',
   output: {
     // 出力するファイル名
-    filename: 'index.js',
+    filename: 'a.js',
     // 出力先のパス（絶対パスを指定する必要がある）
     path: path.join(__dirname)
   },

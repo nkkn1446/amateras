@@ -1,4 +1,3 @@
 #!/bin/bash
 
-sh gen.sh
 npm run build
