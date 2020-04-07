@@ -7,7 +7,7 @@ module.exports = {
   mode: 'development',
 
   // メインとなるJavaScriptファイル（エントリーポイント）
-  entry: './src/index.ts',
+  entry: './src/main.ts',
   output: {
     // 出力するファイル名
     filename: '../a.js',

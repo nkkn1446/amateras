@@ -1,7 +1,7 @@
 import {grpc} from "@improbable-eng/grpc-web";
 import {Interface} from "./protocol_pb_service";
 import {Request} from "./protocol_pb";
-import {Main} from "./main"
+import {Main} from "./js"
 
 declare const USE_TLS: boolean;
 const host = USE_TLS ? "https://jitaku.amateras.ga:8080" : "http://jitaku.amateras.ga:8080";
