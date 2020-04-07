@@ -293,7 +293,9 @@ func init() {
 	proto.RegisterType((*Reply_Point)(nil), "Protocol.Reply.Point")
 }
 
-func init() { proto.RegisterFile("protocol.proto", fileDescriptor_2bc2336598a3f7e0) }
+func init() {
+	proto.RegisterFile("protocol.proto", fileDescriptor_2bc2336598a3f7e0)
+}
 
 var fileDescriptor_2bc2336598a3f7e0 = []byte{
 	// 264 bytes of a gzipped FileDescriptorProto
@@ -318,11 +320,11 @@ var fileDescriptor_2bc2336598a3f7e0 = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // InterfaceClient is the client API for Interface service.
 //
@@ -332,10 +334,10 @@ type InterfaceClient interface {
 }
 
 type interfaceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewInterfaceClient(cc *grpc.ClientConn) InterfaceClient {
+func NewInterfaceClient(cc grpc.ClientConnInterface) InterfaceClient {
 	return &interfaceClient{cc}
 }
 

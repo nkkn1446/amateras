@@ -1,14 +1,21 @@
 {
+  "name": "javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "build": "browserify src/main.js > a.js"
+    "build": "webpack",
+    "watch": "webpack -w"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.12.0",
     "@types/google-protobuf": "^3.7.2",
-    "google-protobuf": "^3.11.4",
-    "jquery": "^3.4.1"
-  },
-  "devDependencies": {
-    "browserify": "^14.1.0"
+    "ts-loader": "^6.2.2",
+    "ts-protoc-gen": "^0.12.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   }
 }

@@ -257,8 +257,8 @@ proto.Protocol.Request.Point.prototype.toObject = function(opt_includeInstance) 
 proto.Protocol.Request.Point.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    x: +jspb.Message.getFieldWithDefault(msg, 2, 0.0),
-    y: +jspb.Message.getFieldWithDefault(msg, 3, 0.0)
+    x: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    y: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0)
   };
 
   if (includeInstance) {
@@ -392,7 +392,7 @@ proto.Protocol.Request.Point.prototype.setType = function(value) {
  * @return {number}
  */
 proto.Protocol.Request.Point.prototype.getX = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
 };
 
 
@@ -410,7 +410,7 @@ proto.Protocol.Request.Point.prototype.setX = function(value) {
  * @return {number}
  */
 proto.Protocol.Request.Point.prototype.getY = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 3, 0.0));
 };
 
 
@@ -628,8 +628,8 @@ proto.Protocol.Reply.Point.prototype.toObject = function(opt_includeInstance) {
 proto.Protocol.Reply.Point.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    x: +jspb.Message.getFieldWithDefault(msg, 2, 0.0),
-    y: +jspb.Message.getFieldWithDefault(msg, 3, 0.0),
+    x: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    y: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
     str: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
@@ -775,7 +775,7 @@ proto.Protocol.Reply.Point.prototype.setType = function(value) {
  * @return {number}
  */
 proto.Protocol.Reply.Point.prototype.getX = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
 };
 
 
@@ -793,7 +793,7 @@ proto.Protocol.Reply.Point.prototype.setX = function(value) {
  * @return {number}
  */
 proto.Protocol.Reply.Point.prototype.getY = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 3, 0.0));
 };
 
 
