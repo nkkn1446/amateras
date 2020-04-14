@@ -1,4 +1,5 @@
 #!/bin/bash
 
-ninja -C src/cgo/window/lib
+cd $(dirname $0)
+./src/cgo/window/lib/build
 go build -o a.out src/main.go

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pgrep -u$USER -l | grep grpcwebproxy | awk '{print $1}' | xargs kill -9
