@@ -1,4 +1,5 @@
 #!/bin/bash
 
+sh protoc.sh
 ./server/build
 ./html/javascript/ts/build

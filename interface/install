@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# install protobuf
+# typescript
+npm install
+# go
+go get -u github.com/golang/protobuf/protoc-gen-go
+
+./server/install
+./proxy/install
+./html/javascript/ts/install
