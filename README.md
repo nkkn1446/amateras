@@ -14,13 +14,13 @@ sudo apt install libsdl2-dev -y
 ### npm
 
 ```
-sudo apt install npm
+sudo apt install npm -y
 ```
 
 ### go
 
 ```
-sudo snap install go
+sudo snap install go --classic
 export GOPATH=$HOME/.go
 export PATH=$PATH:$HOME/go/bin:$HOME/.go/bin
 ```
