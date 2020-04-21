@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package Protocol;
+option go_package = ".;protocol";
 
 service Interface {
   rpc Touch (Request) returns (Reply);
