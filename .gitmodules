@@ -1,4 +1,0 @@
-[submodule "momo"]
-	path = momo
-	url = https://github.com/totsuan/momo.git
-	branch = develop
