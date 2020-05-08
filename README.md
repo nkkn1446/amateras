@@ -1,8 +1,5 @@
 # amateras
 
-## 概要
-Ubuntu上でapkを実行してHTML5向けにストリーミング配信する（クラウドゲーム）
-
 ## インストール
 
 ### momo
@@ -39,15 +36,6 @@ make check
 sudo make install
 sudo ldconfig
 ```
-
-## TODO
-- [ ] x86 →ARM
-- ~~[ ] AndroidEmulator →~~Anbox~~ ~~bluestacks？NoxPlayer？~~ genymotion~~
-- [x] WebRTCでWindowキャプチャ ~~or FFMPEGでキャプチャして配信~~
-- [ ] momo →libwebrtcネイティブ
-- ~~[ ] grpc,envoy →WebRTC DataChannel~~
-- [x] adb →マウスエミュレート
-- [x] サウンドキャプチャ
 
 ## ライセンス
 Apache License 2.0
