@@ -1,4 +1,0 @@
-#!/bin/bash
-
-xdotool search Android windowsize 640 360
-nohup `cd $(dirname ${0}) && pwd`/a.out &
