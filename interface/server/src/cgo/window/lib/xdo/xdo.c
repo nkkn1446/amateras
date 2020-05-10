@@ -212,6 +212,8 @@ int xdo_get_window_location(const xdo_t *xdo, Window wid,
       y = attr.y;
     } else {
       XTranslateCoordinates(xdo->xdpy, wid, attr.root,
+                            // MEMO:正確なウィンドウ位置が取れないので修正
+                            //attr.x, attr.y, &x, &y, &unused_child);
                             0, 0, &x, &y, &unused_child);
     }
 
@@ -1337,7 +1339,7 @@ static void _xdo_populate_charcode_map(xdo_t *xdo) {
   }
   xdo->charcodes_len = idx;
   XkbFreeClientMap(desc, 0, 1);
-  XkbFreeKeyboard(desc, 0, 1);
+  XkbFreeKeyboard(desc, 0, 1); // MEMO:メモリリークするので追加
   XFreeModifiermap(modmap);
 }
 
