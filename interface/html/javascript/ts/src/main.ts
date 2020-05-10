@@ -3,8 +3,8 @@ import {Interface} from "./protocol_pb_service";
 import {Request} from "./protocol_pb";
 import {Main} from "./js"
 
-declare const USE_TLS: boolean;
-const host = USE_TLS ? "https://jitaku.amateras.ga:8081" : "http://jitaku.amateras.ga:8081";
+const isSSL = location.protocol === 'https:';
+const host = (isSSL ? "https://" : "http://") + location.host + ":8081";
 
 function protocolInterface(request: Request, callback: (reply: any) => void) {
   grpc.unary(Interface.Touch, {

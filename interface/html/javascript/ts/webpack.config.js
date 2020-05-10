@@ -37,7 +37,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'USE_TLS': false
+      // 'USE_TLS': false
     })
   ]
 };
