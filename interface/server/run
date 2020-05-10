@@ -2,4 +2,4 @@
 
 cd $(dirname $0)
 DISPLAY=:0 xdotool search Android windowsize 640 360
-DISPLAY=:0 nohup `cd $(dirname ${0}) && pwd`/a.out &
+DISPLAY=:0 nohup ./a.out &
