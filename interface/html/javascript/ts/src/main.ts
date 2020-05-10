@@ -4,7 +4,7 @@ import {Request} from "./protocol_pb";
 import {Main} from "./js"
 
 declare const USE_TLS: boolean;
-const host = USE_TLS ? "https://jitaku.amateras.ga:8080" : "http://jitaku.amateras.ga:8080";
+const host = USE_TLS ? "https://jitaku.amateras.ga:8081" : "http://jitaku.amateras.ga:8081";
 
 function protocolInterface(request: Request, callback: (reply: any) => void) {
   grpc.unary(Interface.Touch, {

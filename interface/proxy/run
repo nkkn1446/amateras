@@ -1,3 +1,4 @@
 #!/bin/bash
 
-nohup grpcwebproxy --backend_addr=localhost:9090 --run_tls_server=false --allow_all_origins &
+# Momoと8080ポートが被るので8081を指定
+nohup grpcwebproxy --server_http_debug_port=8081 --backend_addr=localhost:9090 --run_tls_server=false --allow_all_origins &
