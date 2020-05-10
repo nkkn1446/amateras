@@ -1,69 +1,27 @@
 # amateras
 
 ## 概要
-Ubuntu上でapkを実行してHTML5向けにストリーミング配信する（クラウドゲーム）
+
+デモを交えた概要を[noteの記事](https://note.com/nkkn1446/n/n5bf651dd0636)にまとめています。詳細はそちらを参照してください。
+
+## 動作環境
+
+Ubuntu 18.04 LTS Desktop（x86_64）
+
+## エミュレータ
+アプリを実行するためのエミュレータが必要になります。インストールソフトや動作環境・使い方はnoteの記事にまとめています。
 
 ## インストール
 
-### momo
+必要なソフトをインストールします。
 
-```
-sudo apt install libsdl2-dev -y
-```
+インストール方法は [INSTALL.md](INSTALL.md) を参照してください。
 
-### npm
+## ビルド
 
-```
-sudo apt install npm -y
-```
+ビルド方法は [BUILD.md](BUILD.md) を参照してください。
 
-### go
+## 使い方
 
-```
-sudo snap install go --classic
-export GOPATH=$HOME/.go
-export PATH=$PATH:$HOME/go/bin:$HOME/.go/bin
-```
+使用方法は [USE.md](USE.md) を参照してください。
 
-### protoc
-
-```
-sudo apt-get install autoconf automake libtool curl make g++ unzip git -y
-git clone https://github.com/protocolbuffers/protobuf.git
-cd protobuf
-git submodule update --init --recursive
-./autogen.sh
-./configure
-make
-make check
-sudo make install
-sudo ldconfig
-```
-
-## TODO
-- [ ] x86 →ARM
-- ~~[ ] AndroidEmulator →~~Anbox~~ ~~bluestacks？NoxPlayer？~~ genymotion~~
-- [x] WebRTCでWindowキャプチャ ~~or FFMPEGでキャプチャして配信~~
-- [ ] momo →libwebrtcネイティブ
-- ~~[ ] grpc,envoy →WebRTC DataChannel~~
-- [x] adb →マウスエミュレート
-- [x] サウンドキャプチャ
-
-## ライセンス
-Apache License 2.0
-
-```
-Copyright 2020, totsuan
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
