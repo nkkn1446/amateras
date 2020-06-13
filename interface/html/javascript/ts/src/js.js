@@ -24,6 +24,13 @@ function cleanTouches() {
     }
     touches = [];
 }
+var mouseDragging = false;
+ac.addEventListener("mousedown", function(e) {
+    e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanTouches();
+    touches[touches.length] = getPoint(e, this.getBoundingClientRect());
+    mouseDragging = true;
+});
 ac.addEventListener("touchstart", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
     cleanTouches();
@@ -40,6 +47,14 @@ function cleanMoves() {
     }
     moves = [];
 }
+ac.addEventListener("mousemove", function(e) {
+    if (mouseDragging == false) {
+    	return;
+    }
+    e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanMoves();
+    moves[moves.length] = getPoint(e, this.getBoundingClientRect());
+});
 ac.addEventListener("touchmove", function(e) {
     e.preventDefault();     // デフォルトイベントをキャンセル
     cleanMoves();
@@ -56,6 +71,23 @@ function cleanEnds() {
     }
     ends = [];
 }
+ac.addEventListener("mouseleave", function(e) {
+    if (mouseDragging == false) {
+	return;
+    }
+    // 画面外にドラッグした場合はmouseup扱いする
+    e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanEnds();
+    ends[ends.length] = getPoint(e, this.getBoundingClientRect());
+    mouseDragging = false;
+});
+ac.addEventListener("mouseup", function(e) {
+    // 指が離れているのでイベントのキャンセルは不要
+    // e.preventDefault();     // デフォルトイベントをキャンセル
+    cleanEnds();
+    ends[ends.length] = getPoint(e, this.getBoundingClientRect());
+    mouseDragging = false;
+});
 ac.addEventListener("touchend", function(e) {
     // 指が離れているのでイベントのキャンセルは不要
     // e.preventDefault();     // デフォルトイベントをキャンセル
