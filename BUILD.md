@@ -11,6 +11,7 @@ cd ./interface
 ## momo
 
 ```
+git submodule update --init --recursive
 cd ./momo/build
 ./build.sh ubuntu-18.04_x86_64
 ```
