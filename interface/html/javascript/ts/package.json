@@ -10,12 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@improbable-eng/grpc-web": "^0.12.0",
-    "@types/google-protobuf": "^3.7.2",
-    "google-protobuf": "^3.11.4",
-    "ts-loader": "^6.2.2",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "@improbable-eng/grpc-web": "^0.13.0",
+    "@types/google-protobuf": "^3.7.4",
+    "google-protobuf": "^3.14.0",
+    "ts-loader": "^8.0.11",
+    "typescript": "^4.0.5",
+    "webpack": "^5.5.1",
+    "webpack-cli": "^4.2.0"
   }
 }
