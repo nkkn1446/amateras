@@ -9,13 +9,13 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@improbable-eng/grpc-web": "^0.13.0",
-    "@types/google-protobuf": "^3.7.4",
-    "google-protobuf": "^3.14.0",
-    "ts-loader": "^8.0.11",
-    "typescript": "^4.0.5",
-    "webpack": "^5.5.1",
-    "webpack-cli": "^4.2.0"
+  "devDependencies": {
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "@types/google-protobuf": "^3.15.6",
+    "google-protobuf": "^3.20.1",
+    "ts-loader": "^9.2.9",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
   }
 }
