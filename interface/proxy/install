@@ -1,7 +1,6 @@
 #!/bin/bash
 
-go get -u github.com/golang/dep/cmd/dep
 git clone https://github.com/improbable-eng/grpc-web.git $GOPATH/src/github.com/improbable-eng/grpc-web
-cd $GOPATH/src/github.com/improbable-eng/grpc-web
-dep ensure
-go install ./go/grpcwebproxy
+cd $GOPATH/src/github.com/improbable-eng/grpc-web/go/grpcwebproxy
+go mod init grpcwebproxy && go mod tidy
+go install .

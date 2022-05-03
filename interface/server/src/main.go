@@ -1,8 +1,8 @@
 package main
 
 import (
-	pb "./protocol"
-	"./cgo/window"
+	pb "amateras/server/src/protocol"
+	"amateras/server/src/cgo/window"
 	"log"
 	"net"
 	"fmt"
