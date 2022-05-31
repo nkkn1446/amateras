@@ -56,7 +56,7 @@ func (s *server) Touch(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
 }
 
 func main() {
-	wcontext, wx, wy, _, _, _ = window.GetWindowGeometry(window.WindowActivate(window.Search(window.New(), "Android")))
+	wcontext, wx, wy, _, _, _ = window.GetWindowGeometry(window.WindowActivate(window.Search(window.New(), "Ultima")))
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
